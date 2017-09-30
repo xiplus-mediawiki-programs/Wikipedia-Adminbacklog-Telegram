@@ -21,7 +21,7 @@ function getDBList($type){
 	return $list;
 }
 function sendMessage($type, $title, $message){
-	global $C;
+	global $C, $G;
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"parse_mode" => "HTML",
@@ -31,10 +31,11 @@ function sendMessage($type, $title, $message){
 	$tg = file_get_contents($url);
 	$tg = json_decode($tg, true);
 	$message_id = $tg["result"]["message_id"];
-	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `message_id`) VALUES (:type, :title, :message_id)");
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `message_id`, `message`) VALUES (:type, :title, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
 	$sth->bindValue(":message_id", $message_id);
+	$sth->bindValue(":message", $message);
 	$sth->execute();
 }
 function editMessage($message_id, $message){
@@ -80,21 +81,24 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	echo $type."\n";
 	$list = getDBList($type);
 	foreach (getCategoryMember($category, $cmtype) as $page) {
-		if (isset($list[$page["title"]])) {
-			unset($list[$page["title"]]);
-			echo "old: ".$page["title"]."\n";
-		} else {
-			$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page["title"].'">'.$page["page"].'</a>';
-			if ($type === "csd") {
-				$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
-					"title" => $page["title"],
-					"action" => "raw"
-				));
-				$text = file_get_contents($url);
-				if (preg_match("/{{(?:d|delete)\|(.+?)}}/", $text, $m)) {
-					$message .= " (".$m[1].")";
-				}
+		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page["title"].'">'.$page["title"].'</a>';
+		if ($type === "csd") {
+			$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
+				"title" => $page["title"],
+				"action" => "raw"
+			));
+			$text = file_get_contents($url);
+			if (preg_match("/{{(?:d|delete)\|(.+?)}}/", $text, $m)) {
+				$message .= " (".$m[1].")";
 			}
+		}
+		if (isset($list[$page["title"]])) {
+			if ($list[$page["title"]]["message"] !== $message) {
+				editMessage($list[$page["title"]]["message_id"], $message);
+				echo "editMessage: ".$page["title"]."\n";
+			}
+			unset($list[$page["title"]]);
+		} else {
 			sendMessage($type, $page["title"], $message);
 			echo "sendMessage: ".$page["title"]."\n";
 		}
