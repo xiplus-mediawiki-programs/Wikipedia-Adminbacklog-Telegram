@@ -89,8 +89,11 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				"action" => "raw"
 			));
 			$text = file_get_contents($url);
-			if (preg_match("/{{(?:d|delete)\|(.+?)}}/", $text, $m)) {
-				$message .= " (".$m[1].")";
+			if (preg_match("/{{(?:d|delete|速删)\|(.+?)}}/i", $text, $m)) {
+				$message .= " (".htmlentities($m[1]).")";
+			}
+			if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
+				$message .= " (".htmlentities($m[1]).")";
 			}
 		}
 		if (isset($list[$page["title"]])) {
