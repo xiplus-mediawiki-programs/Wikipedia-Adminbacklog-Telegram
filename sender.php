@@ -98,6 +98,12 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities($m[1]).")";
 			}
+			if (preg_match("/{{User:Liangent-bot\/template\/ntvc-mixed-move/i", $text, $m)) {
+				$message .= " (繁簡混用需移動)";
+			}
+			if (preg_match("/{{hang ?on/i", $text, $m)) {
+				$message .= " (hangon)";
+			}
 		}
 		if (isset($list[$page["title"]])) {
 			if ($list[$page["title"]]["message"] !== $message) {
