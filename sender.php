@@ -103,7 +103,8 @@ function getCategoryMember($category, $cmtype){
 		"format" => "json",
 		"list" => "categorymembers",
 		"cmtype" => $cmtype,
-		"cmtitle" => $category
+		"cmtitle" => $category,
+		"cmlimit" => "max"
 	));
 	$list = file_get_contents($url);
 	$list = json_decode($list, true);
