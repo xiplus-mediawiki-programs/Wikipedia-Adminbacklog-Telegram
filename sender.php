@@ -217,7 +217,7 @@ function AFDBHandler(){
 			$temp = substr($temp, 0, $end);
 			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">存廢</a>)';
+					$message = '#存廢 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
