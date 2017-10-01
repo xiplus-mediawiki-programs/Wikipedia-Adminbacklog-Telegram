@@ -37,7 +37,10 @@ function sendMessage($type, $title, $message){
 	$sth->bindValue(":starttime", date("Y-m-d H:i:s"));
 	$sth->bindValue(":message_id", $message_id);
 	$sth->bindValue(":message", $message);
-	$sth->execute();
+	$res = $sth->execute();
+	if ($res === false) {
+		echo $sth->errorInfo()[2];
+	}
 }
 function editMessage($message_id, $message){
 	global $C, $G;
