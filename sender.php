@@ -22,6 +22,7 @@ function getDBList($type){
 }
 function sendMessage($type, $title, $message){
 	global $C, $G;
+	echo "sendMessage: ".$title." / ".$message;
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"parse_mode" => "HTML",
@@ -29,8 +30,13 @@ function sendMessage($type, $title, $message){
 		"text" => $message
 	));
 	$tg = file_get_contents($url);
+	if ($tg === false) {
+		echo "\tsend fail\n";
+		return;
+	}
 	$tg = json_decode($tg, true);
 	$message_id = $tg["result"]["message_id"];
+	echo "\t".$message_id;
 	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
@@ -39,11 +45,14 @@ function sendMessage($type, $title, $message){
 	$sth->bindValue(":message", $message);
 	$res = $sth->execute();
 	if ($res === false) {
-		echo $sth->errorInfo()[2];
+		echo "\tdb fail: ".$sth->errorInfo()[2]."\n";
+		return;
 	}
+	echo "\n";
 }
 function editMessage($message_id, $message){
 	global $C, $G;
+	echo "editMessage: ".$message_id." / ".$message;
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/editMessageText?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"message_id" => $message_id,
@@ -51,11 +60,21 @@ function editMessage($message_id, $message){
 		"disable_web_page_preview" => true,
 		"text" => $message
 	));
-	file_get_contents($url);
+	$tg = file_get_contents($url);
+	if ($tg === false) {
+		echo "\tedit fail\n";
+		return;
+	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
 	$sth->bindValue(":message", $message);
 	$sth->bindValue(":message_id", $message_id);
 	$sth->execute();
+	$res = $sth->execute();
+	if ($res === false) {
+		echo "\tdb fail: ".$sth->errorInfo()[2]."\n";
+		return;
+	}
+	echo "\n";
 }
 function deleteMessage($message_id){
 	global $C, $G;
@@ -63,10 +82,19 @@ function deleteMessage($message_id){
 		"chat_id" => $C["chat_id"],
 		"message_id" => $message_id
 	));
-	file_get_contents($url);
+	$tg = file_get_contents($url);
+	if ($tg === false) {
+		echo "\tdelete fail\n";
+		return;
+	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
 	$sth->bindValue(":message_id", $message_id);
-	$sth->execute();
+	$res = $sth->execute();
+	if ($res === false) {
+		echo "\tdb fail: ".$sth->errorInfo()[2]."\n";
+		return;
+	}
+	echo "\n";
 }
 function getCategoryMember($category, $cmtype){
 	global $C, $G;
@@ -109,6 +137,8 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			if ($list[$page["title"]]["message"] !== $message) {
 				editMessage($list[$page["title"]]["message_id"], $message);
 				echo "editMessage: ".$page["title"]."\n";
+			} else {
+				echo "oldMessage: ".$page["title"]."\n";
 			}
 			unset($list[$page["title"]]);
 		} else {
@@ -150,6 +180,8 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 			if ($list[$section["title"]]["message"] !== $message) {
 				editMessage($list[$section["title"]]["message_id"], $message);
 				echo "editMessage: ".$section["title"]."\n";
+			} else {
+				echo "oldMessage: ".$section["title"]."\n";
 			}
 			unset($list[$section["title"]]);
 		} else {
@@ -190,6 +222,8 @@ function AFDBHandler(){
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
 							echo "editMessage: ".$page2."\n";
+						} else {
+							echo "oldMessage: ".$page2."\n";
 						}
 						unset($list[$page2]);
 					} else {
