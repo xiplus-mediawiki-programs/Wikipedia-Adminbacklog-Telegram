@@ -31,9 +31,10 @@ function sendMessage($type, $title, $message){
 	$tg = file_get_contents($url);
 	$tg = json_decode($tg, true);
 	$message_id = $tg["result"]["message_id"];
-	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `message_id`, `message`) VALUES (:type, :title, :message_id, :message)");
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
+	$sth->bindValue(":starttime", date("Y-m-d H:i:s"));
 	$sth->bindValue(":message_id", $message_id);
 	$sth->bindValue(":message", $message);
 	$sth->execute();
