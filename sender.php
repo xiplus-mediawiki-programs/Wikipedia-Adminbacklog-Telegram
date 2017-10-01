@@ -162,6 +162,49 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		echo "deleteMessage: ".$section["title"]."\n";
 	}
 }
+function AFDBHandler(){
+	echo "afdb\n";
+	$list = getDBList("afdb");
+	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
+		"title" => "Wikipedia:頁面存廢討論/積壓投票",
+		"action" => "raw"
+	));
+	$text = file_get_contents($url);
+	preg_match_all("/{{#lst:(.+?)\|backlog}}/", $text, $m);
+	foreach ($m[1] as $page) {
+		echo $page."\n";
+		$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
+			"title" => $page,
+			"action" => "raw"
+		));
+		$text = file_get_contents($url);
+		$text = explode("<section begin=backlog />", $text);
+		unset($text[0]);
+		foreach ($text as $temp) {
+			$end = strpos($temp, "<section end=backlog />");
+			$temp = substr($temp, 0, $end);
+			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
+				foreach ($m2[1] as $page2) {
+					$message = '#存廢 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">存廢</a>)';
+					if (isset($list[$page2])) {
+						if ($list[$page2]["message"] !== $message) {
+							editMessage($list[$page2]["message_id"], $message);
+							echo "editMessage: ".$page2."\n";
+						}
+						unset($list[$page2]);
+					} else {
+						sendMessage("afdb", $page2, $message);
+						echo "sendMessage: ".$page2."\n";
+					}
+				}
+			}
+		}
+	}
+	foreach ($list as $page) {
+		deleteMessage($page["message_id"]);
+		echo "deleteMessage: ".$page["title"]."\n";
+	}
+}
 
 if ($time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
 if ($time/60%60 == 0) CategoryMemberHandler("epfull", "#編輯請求_全", "Category:維基百科編輯全保護頁面請求");
