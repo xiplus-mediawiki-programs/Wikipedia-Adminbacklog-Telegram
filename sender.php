@@ -131,7 +131,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= " (繁簡混用需移動)";
 			}
 			if (preg_match("/{{hang ?on/i", $text, $m)) {
-				$message .= " (hangon)";
+				$message .= " (#hangon)";
 			}
 		}
 		if (isset($list[$page["title"]])) {
@@ -175,7 +175,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	foreach (PageMatchList($page, $regex) as $section) {
 		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
-			$message .= " (".$section["status"].")";
+			$message .= " (#".$section["status"].")";
 		}
 		if (isset($list[$section["title"]])) {
 			if ($list[$section["title"]]["message"] !== $message) {
@@ -218,7 +218,7 @@ function AFDBHandler(){
 			$temp = substr($temp, 0, $end);
 			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
