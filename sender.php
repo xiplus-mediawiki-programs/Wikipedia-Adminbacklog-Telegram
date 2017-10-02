@@ -232,6 +232,22 @@ function AFDBHandler(){
 						echo "sendMessage: ".$page2."\n";
 					}
 				}
+			} else if (preg_match_all("/^===? *{{al\|(.+?)}} *===?$/m", $temp, $m2)) {
+				foreach ($m2[1] as $page2) {
+					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
+					if (isset($list[$page2])) {
+						if ($list[$page2]["message"] !== $message) {
+							editMessage($list[$page2]["message_id"], $message);
+							echo "editMessage: ".$page2."\n";
+						} else {
+							echo "oldMessage: ".$page2."\n";
+						}
+						unset($list[$page2]);
+					} else {
+						sendMessage("afdb", $page2, $message);
+						echo "sendMessage: ".$page2."\n";
+					}
+				}
 			}
 		}
 	}
