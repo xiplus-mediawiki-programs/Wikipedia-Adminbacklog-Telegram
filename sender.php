@@ -256,12 +256,57 @@ function AFDBHandler(){
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
+function VIPHandler(){
+	echo "vip\n";
+	$list = getDBList("vip");
+	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
+		"title" => "Wikipedia:当前的破坏",
+		"action" => "raw"
+	));
+	$text = file_get_contents($url);
+	$hash = md5(time());
+	$text = preg_replace("/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m", $hash."$1", $text);
+	$text = explode($hash, $text);
+	unset($text[0]);
+	$checkdup = array();
+	foreach ($text as $temp) {
+		if (preg_match("/{{(?:vandal|IPvandal)\|(.+?)}}/", $temp, $m)) {
+			$user = $m[1];
+			if (preg_match("/^\* 处理：$/m", $temp) || preg_match("/^\* 处理：<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->/m", $temp)) {
+				if (in_array($user, $checkdup)) {
+					echo $user." dup\n";
+					continue;
+				}
+				$checkdup []= $user;
+				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏">'.$user.'</a>';
+				if (isset($list[$user])) {
+					if ($list[$user]["message"] !== $message) {
+						editMessage($list[$user]["message_id"], $message);
+						echo "editMessage: ".$user."\n";
+					} else {
+						echo "oldMessage: ".$user."\n";
+					}
+					unset($list[$user]);
+				} else {
+					sendMessage("vip", $user, $message);
+					echo "sendMessage: ".$user."\n";
+				}
+			}
+		}
+	}
+	foreach ($list as $page) {
+		deleteMessage($page["message_id"]);
+		echo "deleteMessage: ".$page["title"]."\n";
+	}
+}
 
 if ($time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
-if ($time/60%60 == 0) CategoryMemberHandler("epfull", "#編輯請求_全", "Category:維基百科編輯全保護頁面請求");
-if ($time/60%60 == 0) CategoryMemberHandler("epsemi", "#編輯請求_半", "Category:維基百科編輯半保護頁面請求");
-if ($time/60%60 == 0) CategoryMemberHandler("epnone", "#編輯請求_無", "Category:維基百科編輯無保護頁面請求");
-if ($time/60%60 == 0) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
-if ($time/60%60 == 0) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
-if ($time/60%60 == 0) PageStatusHandler("affp", "#過濾器錯誤", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
-if ($time/60%10 == 0) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/== .*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if ($time/60%10 == 1) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
+if ($time/60%10 == 2) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
+if ($time/60%10 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
+if ($time/60%10 == 4) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
+if ($time/60%10 == 5) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
+if ($time/60%10 == 6) PageStatusHandler("affp", "#過濾器錯誤", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
+if ($time/60%10 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/== .*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if ($time/60%10 == 8) AFDBHandler();
+if ($time/60%10 == 9) VIPHandler();
