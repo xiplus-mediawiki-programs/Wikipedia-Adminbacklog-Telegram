@@ -121,13 +121,13 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				"action" => "raw"
 			));
 			$text = file_get_contents($url);
-			if (preg_match("/{{(?:d|delete|速删)\|(.+?)}}/i", $text, $m)) {
+			if (preg_match("/{{d\|bot=Jimmy-bot\|([^|}]+)/", $text, $m)) {
 				$message .= " (".htmlentities($m[1]).")";
-			}
-			if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
+			} else if (preg_match("/{{(?:d|delete|csd|速删)\|(.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities($m[1]).")";
-			}
-			if (preg_match("/{{User:Liangent-bot\/template\/ntvc-mixed-move/i", $text, $m)) {
+			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
+				$message .= " (".htmlentities($m[1]).")";
+			} else if (strpos($text, "User:Liangent-bot/template/ntvc-mixed-move/")) {
 				$message .= " (繁簡混用需移動)";
 			}
 			if (preg_match("/{{hang ?on/i", $text, $m)) {
