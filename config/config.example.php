@@ -21,12 +21,13 @@ $C["typelist"] = [
 	"epfull" => ["epfull"],
 	"epnone" => ["epnone"],
 	"epsemi" => ["epsemi"],
+	"rfpp" => ["rfpp"],
 	"rm" => ["rm"],
 	"uaa" => ["uaa"],
 	"uc" => ["uc"],
 	"unblock" => ["unblock"],
 	"vip" => ["vip"],
-	"sum" => ["afdb", "affp", "csd", "drv", "epfull", "epnone", "epsemi", "rm", "uaa", "uc", "unblock", "vip"]
+	"sum" => ["afdb", "affp", "csd", "drv", "epfull", "epnone", "epsemi", "rfpp", "rm", "uaa", "uc", "unblock", "vip"]
 ];
 $C["ChatDescription"] = "中文維基百科管理員積壓工作直播 （CSD以外15分鐘更新一次）
 目前有%sum%項積壓工作

@@ -304,6 +304,55 @@ function VIPHandler(){
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
+function RFPPHandler(){
+	$type = "rfpp";
+	echo $type."\n";
+	$list = getDBList($type);
+	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
+		"title" => "Wikipedia:请求保护页面",
+		"action" => "raw"
+	));
+	$text = file_get_contents($url);
+	$hash = md5(time());
+	$text = preg_replace("/^(===)/m", $hash."$1", $text);
+	$text = explode($hash, $text);
+	unset($text[0]);
+	echo count($text);
+	$checkdup = array();
+	foreach ($text as $temp) {
+		if (preg_match("/===(.+?)===/", $temp, $m)) {
+			$page = $m[1];
+			$page = trim($page);
+			$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
+			if (!preg_match("/({{RFPP\||錯誤報告|(?<!请求|請求)(半|全|白紙)(保護|保护)\d+(日|周|週|個月)|不是(编辑战|編輯戰))/", $temp)) {
+				if (in_array($page, $checkdup)) {
+					echo $page." dup\n";
+					continue;
+				}
+				$checkdup []= $page;
+				$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面">'.$page.'</a>';
+				if (isset($list[$page])) {
+					if ($list[$page]["message"] !== $message) {
+						editMessage($list[$page]["message_id"], $message);
+						echo "editMessage: ".$page."\n";
+					} else {
+						echo "oldMessage: ".$page."\n";
+					}
+					unset($list[$page]);
+				} else {
+					sendMessage($type, $page, $message);
+					echo "sendMessage: ".$page."\n";
+				}
+			} else {
+				echo "done: ".$page."\n";
+			}
+		}
+	}
+	foreach ($list as $page) {
+		deleteMessage($page["message_id"]);
+		echo "deleteMessage: ".$page["title"]."\n";
+	}
+}
 function setChatDescription(){
 	global $C, $G;
 	if (!isset($G["modify"]) || !$G["modify"]) {
@@ -346,4 +395,5 @@ if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户
 if ($time/60%15 == 9) AFDBHandler();
 if ($time/60%15 == 10) VIPHandler();
 if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(.+?)}}/", 1, 1, 0]);
+if ($time/60%15 == 12) RFPPHandler();
 setChatDescription();
