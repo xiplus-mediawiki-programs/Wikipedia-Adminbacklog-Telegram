@@ -49,6 +49,7 @@ function sendMessage($type, $title, $message){
 		return;
 	}
 	echo "\n";
+	$G["modify"] = true;
 }
 function editMessage($message_id, $message){
 	global $C, $G;
@@ -75,6 +76,7 @@ function editMessage($message_id, $message){
 		return;
 	}
 	echo "\n";
+	$G["modify"] = true;
 }
 function deleteMessage($message_id){
 	global $C, $G;
@@ -95,6 +97,7 @@ function deleteMessage($message_id){
 		return;
 	}
 	echo "\n";
+	$G["modify"] = true;
 }
 function getCategoryMember($category, $cmtype){
 	global $C, $G;
@@ -301,14 +304,46 @@ function VIPHandler(){
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
+function setChatDescription(){
+	global $C, $G;
+	if (!isset($G["modify"]) || !$G["modify"]) {
+		return;
+	}
+	echo "setChatDescription\n";
+	$sth = $G["db"]->prepare("SELECT COUNT(*) AS `count`, `type` FROM `{$C['DBTBprefix']}` GROUP BY `type`");
+	$sth->execute();
+	$row = $sth->fetchAll(PDO::FETCH_ASSOC);
+	$cnt = array();
+	foreach ($row as $pages) {
+		$cnt[$pages["type"]] = $pages["count"];
+	}
+	$description = $C["ChatDescription"];
+	foreach ($C["typelist"] as $key => $types) {
+		$count = 0;
+		foreach ($types as $type) {
+			if (isset($cnt[$type])) {
+				$count += $cnt[$type];
+			}
+		}
+		$description = str_replace("%".$key."%", $count, $description);
+	}
+	$url = 'https://api.telegram.org/bot'.$C['token'].'/setChatDescription?'.http_build_query(array(
+		"chat_id" => $C["chat_id"],
+		"description" => $description
+	));
+	$tg = file_get_contents($url);
+}
 
 if ($time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
-if ($time/60%10 == 1) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
-if ($time/60%10 == 2) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
-if ($time/60%10 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
-if ($time/60%10 == 4) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
-if ($time/60%10 == 5) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
-if ($time/60%10 == 6) PageStatusHandler("affp", "#過濾器錯誤", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
-if ($time/60%10 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/== .*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
-if ($time/60%10 == 8) AFDBHandler();
-if ($time/60%10 == 9) VIPHandler();
+if ($time/60%15 == 1) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
+if ($time/60%15 == 2) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
+if ($time/60%15 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
+if ($time/60%15 == 4) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
+if ($time/60%15 == 5) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
+if ($time/60%15 == 6) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
+if ($time/60%15 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/== .*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== (.+?) ===\n\*{{status2}}/", 1, 1, 0]);
+if ($time/60%15 == 9) AFDBHandler();
+if ($time/60%15 == 10) VIPHandler();
+if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(.+?)}}/", 1, 1, 0]);
+setChatDescription();
