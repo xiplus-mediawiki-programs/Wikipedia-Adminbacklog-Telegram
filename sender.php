@@ -177,11 +177,17 @@ function PageMatchList($page, $regex){
 function PageStatusHandler($type, $hashtag, $page, $regex){
 	echo $type."\n";
 	$list = getDBList($type);
+	$checkdup = array();
 	foreach (PageMatchList($page, $regex) as $section) {
 		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
 		}
+		if (in_array($section["title"], $checkdup)) {
+			echo $section["title"]." dup\n";
+			continue;
+		}
+		$checkdup []= $section["title"];
 		if (isset($list[$section["title"]])) {
 			if ($list[$section["title"]]["message"] !== $message) {
 				editMessage($list[$section["title"]]["message_id"], $message);
@@ -396,4 +402,5 @@ if ($time/60%15 == 9) AFDBHandler();
 if ($time/60%15 == 10) VIPHandler();
 if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if ($time/60%15 == 12) RFPPHandler();
+if ($time/60%15 == 13) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== (.+?) ===\n{{status2}}/", 1, 1, 0]);
 setChatDescription();
