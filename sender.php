@@ -394,6 +394,6 @@ if ($time/60%15 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存�
 if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== (.+?) ===\n\*{{status2}}/", 1, 1, 0]);
 if ($time/60%15 == 9) AFDBHandler();
 if ($time/60%15 == 10) VIPHandler();
-if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(.+?)}}/", 1, 1, 0]);
+if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if ($time/60%15 == 12) RFPPHandler();
 setChatDescription();
