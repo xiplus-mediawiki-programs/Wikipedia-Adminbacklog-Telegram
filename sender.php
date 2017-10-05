@@ -5,8 +5,26 @@ if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
 
+stream_context_set_default(
+	array('http' => array(
+		'ignore_errors' => true)
+	)
+);
+
 $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
+
+$options = getopt("t:d");
+if (isset($options["d"])) {
+	$G["modify"] = true;
+	echo "force setChatDescription\n";
+}
+if (isset($options["t"])) {
+	$h = floor($options["t"]/100);
+	$m = $options["t"]%100;
+	echo "set to $h:$m\n";
+	$time = $h*3600+$m*60;
+}
 
 function getDBList($type){
 	global $C, $G;
@@ -84,9 +102,11 @@ function deleteMessage($message_id){
 		"chat_id" => $C["chat_id"],
 		"message_id" => $message_id
 	));
-	$tg = file_get_contents($url);
-	if ($tg === false) {
+	$tg = @file_get_contents($url);
+	$tg = json_decode($tg, true);
+	if (!$tg["ok"]) {
 		echo "\tdelete fail\n";
+		var_dump($tg);
 		return;
 	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
@@ -382,11 +402,14 @@ function setChatDescription(){
 		}
 		$description = str_replace("%".$key."%", $count, $description);
 	}
+	echo $description."\n";
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/setChatDescription?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"description" => $description
 	));
-	$tg = file_get_contents($url);
+	$tg = @file_get_contents($url);
+	$tg = json_decode($tg, true);
+	var_dump($tg);
 }
 
 if ($time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
