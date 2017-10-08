@@ -308,7 +308,7 @@ function VIPHandler(){
 	foreach ($text as $temp) {
 		if (preg_match("/{{(?:vandal|IPvandal)\|(.+?)}}/", $temp, $m)) {
 			$user = $m[1];
-			if (preg_match("/^\* 处理：$/m", $temp) || preg_match("/^\* 处理：<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->/m", $temp)) {
+			if (preg_match("/^\* 处理：$/m", $temp) || preg_match("/^\* 处理：<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->$/m", $temp)) {
 				if (in_array($user, $checkdup)) {
 					echo $user." dup\n";
 					continue;
