@@ -96,18 +96,23 @@ function editMessage($message_id, $message){
 	echo "\n";
 	$G["modify"] = true;
 }
-function deleteMessage($message_id){
+function deleteMessage($message_id, $starttime){
 	global $C, $G;
-	$url = 'https://api.telegram.org/bot'.$C['token'].'/deleteMessage?'.http_build_query(array(
-		"chat_id" => $C["chat_id"],
-		"message_id" => $message_id
-	));
-	$tg = @file_get_contents($url);
-	$tg = json_decode($tg, true);
-	if (!$tg["ok"]) {
-		echo "\tdelete fail\n";
-		var_dump($tg);
-		return;
+	if ($starttime < date("Y-m-d H:i:s", time()-86400*2)) {
+		editMessage($message_id, "已完成工作");
+	} else {
+		$url = 'https://api.telegram.org/bot'.$C['token'].'/deleteMessage?'.http_build_query(array(
+			"chat_id" => $C["chat_id"],
+			"message_id" => $message_id
+		));
+		$tg = @file_get_contents($url);
+		$tg = json_decode($tg, true);
+		if (!$tg["ok"]) {
+			echo "\tdelete fail\n";
+			echo $url."\n";
+			var_dump($tg);
+			return;
+		}
 	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
 	$sth->bindValue(":message_id", $message_id);
@@ -173,7 +178,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"]);
+		deleteMessage($page["message_id"], $page["starttime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -283,7 +288,7 @@ function AFDBHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"]);
+		deleteMessage($page["message_id"], $page["starttime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -326,7 +331,7 @@ function VIPHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"]);
+		deleteMessage($page["message_id"], $page["starttime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -375,7 +380,7 @@ function RFPPHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"]);
+		deleteMessage($page["message_id"], $page["starttime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
