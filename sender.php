@@ -150,7 +150,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= " (".htmlentities($m[1]).")";
 			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities($m[1]).")";
-			} else if (strpos($text, "User:Liangent-bot/template/ntvc-mixed-move/")) {
+			} else if (strpos($text, "User:Liangent-bot/template/ntvc-mixed-move")) {
 				$message .= " (繁簡混用需移動)";
 			} else if (preg_match("/{{(Notchinese|Notmandarin)\|/i", $text)) {
 				$message .= " (G14)";
