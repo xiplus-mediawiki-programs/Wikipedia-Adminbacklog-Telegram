@@ -47,12 +47,14 @@ function sendMessage($type, $title, $message){
 		"disable_web_page_preview" => true,
 		"text" => $message
 	));
-	$tg = file_get_contents($url);
-	if ($tg === false) {
-		echo "\tsend fail\n";
+	$tg = @file_get_contents($url);
+	$tg = json_decode($tg, true);
+	if (!$tg["ok"]) {
+		echo "\tedit fail\n";
+		echo $url."\n";
+		var_dump($tg);
 		return;
 	}
-	$tg = json_decode($tg, true);
 	$message_id = $tg["result"]["message_id"];
 	echo "\t".$message_id;
 	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :message_id, :message)");
@@ -79,9 +81,12 @@ function editMessage($message_id, $message){
 		"disable_web_page_preview" => true,
 		"text" => $message
 	));
-	$tg = file_get_contents($url);
-	if ($tg === false) {
+	$tg = @file_get_contents($url);
+	$tg = json_decode($tg, true);
+	if (!$tg["ok"]) {
 		echo "\tedit fail\n";
+		echo $url."\n";
+		var_dump($tg);
 		return;
 	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
