@@ -149,7 +149,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	echo $type."\n";
 	$list = getDBList($type);
 	foreach (getCategoryMember($category, $cmtype) as $page) {
-		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page["title"].'">'.$page["title"].'</a>';
+		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.urlencode($page["title"]).'">'.$page["title"].'</a>';
 		if ($type === "csd") {
 			$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
 				"title" => $page["title"],
