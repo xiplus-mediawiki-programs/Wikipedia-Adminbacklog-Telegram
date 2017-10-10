@@ -104,7 +104,7 @@ function editMessage($message_id, $message){
 function deleteMessage($message_id, $starttime){
 	global $C, $G;
 	if (strtotime($starttime) < time()-86400*2) {
-		editMessage($message_id, "已完成工作");
+		editMessage($message_id, "#已完成工作");
 	} else {
 		$url = 'https://api.telegram.org/bot'.$C['token'].'/deleteMessage?'.http_build_query(array(
 			"chat_id" => $C["chat_id"],
