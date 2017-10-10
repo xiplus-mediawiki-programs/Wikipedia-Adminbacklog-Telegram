@@ -116,7 +116,9 @@ function deleteMessage($message_id, $starttime){
 			echo "\tdelete fail\n";
 			echo $url."\n";
 			var_dump($tg);
-			return;
+			if (!in_array($tg["description"], ["Bad Request: message to delete not found"])) {
+				return;
+			}
 		}
 	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
