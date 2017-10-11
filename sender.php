@@ -149,7 +149,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	echo $type."\n";
 	$list = getDBList($type);
 	foreach (getCategoryMember($category, $cmtype) as $page) {
-		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.urlencode($page["title"]).'">'.$page["title"].'</a>';
+		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page["title"]).'">'.$page["title"].'</a>';
 		if ($type === "csd") {
 			$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
 				"title" => $page["title"],
@@ -211,7 +211,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	$list = getDBList($type);
 	$checkdup = array();
 	foreach (PageMatchList($page, $regex) as $section) {
-		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.$page.'">'.$section["page"].'</a>';
+		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
 		}
@@ -261,7 +261,7 @@ function AFDBHandler(){
 			$temp = substr($temp, 0, $end);
 			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.$page2.'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
@@ -277,7 +277,7 @@ function AFDBHandler(){
 				}
 			} else if (preg_match_all("/^===? *{{al\|(.+?)}} *===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.$page.'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
