@@ -234,7 +234,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		}
 	}
 	foreach ($list as $section) {
-		deleteMessage($section["message_id"]);
+		deleteMessage($section["message_id"], $section["starttime"]);
 		echo "deleteMessage: ".$section["title"]."\n";
 	}
 }
