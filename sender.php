@@ -438,4 +438,5 @@ if ($time/60%15 == 10) VIPHandler();
 if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if ($time/60%15 == 12) RFPPHandler();
 if ($time/60%15 == 13) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== (.+?) ===\n{{status2}}/", 1, 1, 0]);
+if ($time/60%15 == 14) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 setChatDescription();
