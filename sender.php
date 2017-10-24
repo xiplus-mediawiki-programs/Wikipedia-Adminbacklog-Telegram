@@ -321,7 +321,7 @@ function VIPHandler(){
 					continue;
 				}
 				$checkdup []= $user;
-				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏#.7B.7Bvandal.7C'.str_replace(" ", "_", $user).'.7D.7D">'.$user.'</a>';
+				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏#.7B.7Bvandal.7C'.str_replace("%", ".", rawurlencode(str_replace(" ", "_", $user))).'.7D.7D">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
 						editMessage($list[$user]["message_id"], $message);
