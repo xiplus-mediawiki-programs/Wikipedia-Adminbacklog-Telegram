@@ -321,7 +321,7 @@ function VIPHandler(){
 					continue;
 				}
 				$checkdup []= $user;
-				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏">'.$user.'</a>';
+				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏#.7B.7Bvandal.7C'.str_replace(" ", "_", $user).'.7D.7D">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
 						editMessage($list[$user]["message_id"], $message);
@@ -368,7 +368,7 @@ function RFPPHandler(){
 					continue;
 				}
 				$checkdup []= $page;
-				$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面">'.$page.'</a>';
+				$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面#'.str_replace(" ", "_", $page).'">'.$page.'</a>';
 				if (isset($list[$page])) {
 					if ($list[$page]["message"] !== $message) {
 						editMessage($list[$page]["message_id"], $message);
