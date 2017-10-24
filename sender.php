@@ -362,7 +362,7 @@ function RFPPHandler(){
 			$page = $m[1];
 			$page = trim($page);
 			$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
-			if (!preg_match("/({{RFPP\||拒絕|拒绝|錯誤報告|(?<!请求|請求)(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|不是(编辑战|編輯戰)|完成)/", $temp)) {
+			if (!preg_match("/({{RFPP\||拒絕|拒绝|錯誤報告|(?<!请求|請求)(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|不是(编辑战|編輯戰)|完成|Done)/i", $temp)) {
 				if (in_array($page, $checkdup)) {
 					echo $page." dup\n";
 					continue;
