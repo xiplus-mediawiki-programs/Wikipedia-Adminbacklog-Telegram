@@ -17,6 +17,14 @@ CREATE TABLE `Adminbacklog` (
   `message` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `Adminbacklog_autodel` (
+  `message_id` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `text` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `update_id` int(11) NOT NULL,
+  `date` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `Adminbacklog_log` (
   `msg` text NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -24,6 +32,9 @@ CREATE TABLE `Adminbacklog_log` (
 
 
 ALTER TABLE `Adminbacklog`
+  ADD UNIQUE KEY `message_id` (`message_id`);
+
+ALTER TABLE `Adminbacklog_autodel`
   ADD UNIQUE KEY `message_id` (`message_id`);
 COMMIT;
 
