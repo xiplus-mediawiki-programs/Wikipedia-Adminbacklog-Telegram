@@ -17,6 +17,11 @@ CREATE TABLE `Adminbacklog` (
   `message` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `Adminbacklog_log` (
+  `msg` text NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 ALTER TABLE `Adminbacklog`
   ADD UNIQUE KEY `message_id` (`message_id`);

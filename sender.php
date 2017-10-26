@@ -38,6 +38,12 @@ function getDBList($type){
 	}
 	return $list;
 }
+function writelog($msg=""){
+	global $C, $G;
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}_log` (`msg`) VALUES (:msg)");
+	$sth->bindValue(":msg", $msg);
+	$res = $sth->execute();
+}
 function sendMessage($type, $title, $message){
 	global $C, $G;
 	echo "sendMessage: ".$title." / ".$message;
@@ -47,12 +53,13 @@ function sendMessage($type, $title, $message){
 		"disable_web_page_preview" => true,
 		"text" => $message
 	));
-	$tg = @file_get_contents($url);
-	$tg = json_decode($tg, true);
+	$tgs = @file_get_contents($url);
+	$tg = json_decode($tgs, true);
 	if (!$tg["ok"]) {
 		echo "\tedit fail\n";
 		echo $url."\n";
 		var_dump($tg);
+		writelog("send: ".$message." ".$tgs);
 		return;
 	}
 	$message_id = $tg["result"]["message_id"];
@@ -81,12 +88,13 @@ function editMessage($message_id, $message){
 		"disable_web_page_preview" => true,
 		"text" => $message
 	));
-	$tg = @file_get_contents($url);
-	$tg = json_decode($tg, true);
+	$tgs = @file_get_contents($url);
+	$tg = json_decode($tgs, true);
 	if (!$tg["ok"]) {
 		echo "\tedit fail\n";
 		echo $url."\n";
 		var_dump($tg);
+		writelog("edit: ".$message_id." ".$message." ".$tgs);
 		return;
 	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
@@ -110,12 +118,13 @@ function deleteMessage($message_id, $starttime){
 			"chat_id" => $C["chat_id"],
 			"message_id" => $message_id
 		));
-		$tg = @file_get_contents($url);
-		$tg = json_decode($tg, true);
+		$tgs = @file_get_contents($url);
+		$tg = json_decode($tgs, true);
 		if (!$tg["ok"]) {
 			echo "\tdelete fail\n";
 			echo $url."\n";
 			var_dump($tg);
+			writelog("delete: ".$message_id." ".$tgs);
 			if (!in_array($tg["description"], ["Bad Request: message to delete not found"])) {
 				return;
 			}
