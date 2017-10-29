@@ -433,7 +433,7 @@ function setChatDescription(){
 	var_dump($tg);
 }
 
-if ($time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
+if (!isset($options["t"]) && $time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
 if ($time/60%15 == 1) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
 if ($time/60%15 == 2) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
 if ($time/60%15 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
