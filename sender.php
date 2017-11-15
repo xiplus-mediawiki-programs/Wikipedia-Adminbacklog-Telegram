@@ -440,13 +440,13 @@ if ($time/60%15 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Cat
 if ($time/60%15 == 4) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
 if ($time/60%15 == 5) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
 if ($time/60%15 == 6) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
-if ($time/60%15 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/== .*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
-if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== (.+?) ===\n\*{{status2}}/", 1, 1, 0]);
+if ($time/60%15 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *([^ ]+?) *===\n\*{{status2}}/", 1, 1, 0]);
 if ($time/60%15 == 9) AFDBHandler();
 if ($time/60%15 == 10) VIPHandler();
 if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if ($time/60%15 == 12) RFPPHandler();
-if ($time/60%15 == 13) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== (.+?) ===\n{{status2}}/", 1, 1, 0]);
+if ($time/60%15 == 13) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *([^ ]+?) *===\n{{status2}}/", 1, 1, 0]);
 if ($time/60%15 == 14) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 if ($time/60%60 == 1) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if ($time/60%60 == 2) PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
