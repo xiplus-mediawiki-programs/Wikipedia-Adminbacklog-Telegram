@@ -44,6 +44,14 @@ function writelog($msg=""){
 	$sth->bindValue(":msg", $msg);
 	$res = $sth->execute();
 }
+function getMessageFromDB($message_id){
+	global $C, $G;
+	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
+	$sth->bindValue(":message_id", $message_id);
+	$sth->execute();
+	$row = $sth->fetch(PDO::FETCH_ASSOC);
+	return $row;
+}
 function sendMessage($type, $title, $message){
 	global $C, $G;
 	echo "sendMessage: ".$title." / ".$message;
@@ -54,12 +62,17 @@ function sendMessage($type, $title, $message){
 		"text" => $message
 	));
 	$tgs = @file_get_contents($url);
+	if ($tgs === false) {
+		echo "network fail\n";
+		writelog("network fail send: ".$title." / ".$message);
+		return;
+	}
 	$tg = json_decode($tgs, true);
 	if (!$tg["ok"]) {
-		echo "\tedit fail\n";
+		echo "\tsend fail\n";
 		echo $url."\n";
 		var_dump($tg);
-		writelog("send: ".$message." ".$tgs);
+		writelog("send fail: ".$message." ".$tgs);
 		return;
 	}
 	$message_id = $tg["result"]["message_id"];
@@ -89,12 +102,17 @@ function editMessage($message_id, $message){
 		"text" => $message
 	));
 	$tgs = @file_get_contents($url);
+	if ($tgs === false) {
+		echo "network fail\n";
+		writelog("network fail edit: ".$message_id." / ".$message);
+		return;
+	}
 	$tg = json_decode($tgs, true);
 	if (!$tg["ok"]) {
 		echo "\tedit fail\n";
 		echo $url."\n";
 		var_dump($tg);
-		writelog("edit: ".$message_id." ".$message." ".$tgs);
+		writelog("edit fail: ".$message_id." / ".$message." / ".$tgs);
 		return;
 	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
@@ -119,15 +137,20 @@ function deleteMessage($message_id, $starttime){
 			"message_id" => $message_id
 		));
 		$tgs = @file_get_contents($url);
+		if ($tgs === false) {
+			echo "network fail\n";
+			writelog("network fail delete: ".$message_id." / ".$message);
+			return;
+		}
 		$tg = json_decode($tgs, true);
 		if (!$tg["ok"]) {
 			echo "\tdelete fail\n";
 			echo $url."\n";
 			var_dump($tg);
-			writelog("delete: ".$message_id." ".$tgs);
 			if (!in_array($tg["description"], ["Bad Request: message to delete not found"])) {
 				return;
 			}
+			writelog("delete: ".$message_id." / ".$tgs." / ".json_encode(getMessageFromDB($message_id)), JSON_UNESCAPED_UNICODE);
 		}
 	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
