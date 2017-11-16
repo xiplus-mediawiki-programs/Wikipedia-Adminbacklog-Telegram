@@ -42,4 +42,9 @@ $C["ChatDescription"] = "中文維基百科管理員積壓工作直播
 
 定時刪討論，重要內容自行備份，以保持乾淨";
 
-$C["autodellimit"] = 86400 * 2;
+$C["autodellimit"] = [
+	"text" => 60*60*24,
+	"sticker" => 60*60*24,
+	"document" => 60*60*24,
+	"unknown" => 60*60*24
+];

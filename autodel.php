@@ -14,13 +14,17 @@ stream_context_set_default(
 $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
-echo "delete before ".date("Y-m-d H:i:s", time()-$C["autodellimit"])." (".(time()-$C["autodellimit"]).")\n";
-$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}_autodel` WHERE `date` < :date ORDER BY `date`");
-$sth->bindValue(":date", time()-$C["autodellimit"]);
-$sth->execute();
-$row = $sth->fetchAll(PDO::FETCH_ASSOC);
-foreach ($row as $message) {
-	echo "delete ".$message["message_id"]." ".$message["first_name"]." ".$message["text"]." ".date("Y-m-d H:i", $message["date"]);
+$del = [];
+foreach ($C["autodellimit"] as $type => $limit) {
+	echo "delete before ".$type." ".date("Y-m-d H:i:s", time()-$limit)." (".(time()-$limit).")\n";
+	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}_autodel` WHERE `type` = :type AND `date` < :date ORDER BY `date`");
+	$sth->bindValue(":type", $type);
+	$sth->bindValue(":date", time()-$limit);
+	$sth->execute();
+	$del = array_merge($del, $sth->fetchAll(PDO::FETCH_ASSOC));
+}
+foreach ($del as $message) {
+	echo "delete ".$message["message_id"]." ".$message["first_name"]." ".$message["type"]." ".$message["text"]." ".date("Y-m-d H:i", $message["date"]);
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/deleteMessage?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"message_id" => $message["message_id"]
@@ -60,13 +64,28 @@ if ($tg === false) {
 }
 $tg = json_decode($tg, true);
 
-$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}_autodel` (`message_id`, `first_name`, `text`, `update_id`, `date`) VALUES (:message_id, :first_name, :text, :update_id, :date)");
+$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}_autodel` (`message_id`, `first_name`, `type`, `text`, `update_id`, `date`) VALUES (:message_id, :first_name, :type, :text, :update_id, :date)");
 foreach ($tg["result"] as $update) {
 	if (isset($update["update_id"]) && isset($update["message"]["message_id"])) {
-		echo $update["message"]["message_id"]." ".$update["message"]["from"]["first_name"]." ".($update["message"]["text"] ?? "")." ".$update["update_id"]." ".$update["message"]["date"]."\n";
+		$type = "unknown";
+		$text = "";
+		if (isset($update["message"]["text"])) {
+			$type = "text";
+			$text = $update["message"]["text"];
+		} else if (isset($update["message"]["sticker"])) {
+			$type = "sticker";
+			$text = $update["message"]["sticker"]["file_id"];
+		} else if (isset($update["message"]["document"])) {
+			$type = "document";
+			$text = $update["message"]["document"]["file_id"];
+		} else if (isset($update["message"]["photo"])) {
+			$type = "photo";
+		}
+		echo $update["message"]["message_id"]." ".$update["message"]["from"]["first_name"]." ".$type." ".$text." ".$update["update_id"]." ".$update["message"]["date"]."\n";
 		$sth->bindValue(":message_id", $update["message"]["message_id"]);
 		$sth->bindValue(":first_name", $update["message"]["from"]["first_name"]);
-		$sth->bindValue(":text", $update["message"]["text"] ?? "");
+		$sth->bindValue(":type", $type);
+		$sth->bindValue(":text", $text);
 		$sth->bindValue(":update_id", $update["update_id"]);
 		$sth->bindValue(":date", $update["message"]["date"]);
 		$res = $sth->execute();
