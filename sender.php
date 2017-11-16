@@ -243,7 +243,11 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	$list = getDBList($type);
 	$checkdup = array();
 	foreach (PageMatchList($page, $regex) as $section) {
-		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.$section["page"].'</a>';
+		$url = 'https://zh.wikipedia.org/wiki/'.rawurlencode($page);
+		if ($type === "rfcu") {
+			$url .= '#'.str_replace(" ", "_", $section["page"]);
+		}
+		$message = $hashtag.' <a href="'.$url.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
 		}
