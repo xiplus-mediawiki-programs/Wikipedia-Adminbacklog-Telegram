@@ -15,11 +15,12 @@ $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
 $del = [];
-foreach ($C["autodellimit"] as $type => $limit) {
-	echo "delete before ".$type." ".date("Y-m-d H:i:s", time()-$limit)." (".(time()-$limit).")\n";
-	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}_autodel` WHERE `type` = :type AND `date` < :date ORDER BY `date`");
-	$sth->bindValue(":type", $type);
-	$sth->bindValue(":date", time()-$limit);
+foreach ($C["autodellimit"] as $limit) {
+	echo "delete ".$limit[0]." ".$limit[1]." < ".date("Y-m-d H:i:s", time()-$limit[2])." (".(time()-$limit[2]).")\n";
+	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}_autodel` WHERE `type` = :type AND `text` REGEXP :text AND `date` < :date ORDER BY `date`");
+	$sth->bindValue(":type", $limit[0]);
+	$sth->bindValue(":text", trim($limit[1], "/"));
+	$sth->bindValue(":date", time()-$limit[2]);
 	$sth->execute();
 	$del = array_merge($del, $sth->fetchAll(PDO::FETCH_ASSOC));
 }
