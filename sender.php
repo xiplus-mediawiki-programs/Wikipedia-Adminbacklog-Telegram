@@ -244,7 +244,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	$checkdup = array();
 	foreach (PageMatchList($page, $regex) as $section) {
 		$url = 'https://zh.wikipedia.org/wiki/'.rawurlencode($page);
-		if ($type === "rfcu") {
+		if (in_array($type, ["rfcu", "drv"])) {
 			$url .= '#'.str_replace(" ", "_", $section["page"]);
 		}
 		$message = $hashtag.' <a href="'.$url.'">'.$section["page"].'</a>';
@@ -297,7 +297,7 @@ function AFDBHandler(){
 			$temp = substr($temp, 0, $end);
 			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
@@ -313,7 +313,7 @@ function AFDBHandler(){
 				}
 			} else if (preg_match_all("/^===? *{{al\|(.+?)}} *===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
