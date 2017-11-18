@@ -389,36 +389,49 @@ function RFPPHandler(){
 	$text = file_get_contents($url);
 	$hash = md5(time());
 	$text = preg_replace("/^(===)/m", $hash."$1", $text);
-	$text = explode($hash, $text);
-	unset($text[0]);
-	echo count($text);
+	$text = explode("== 请求解除保护 ==", $text);
+	if (count($text) !== 2) {
+		echo "split rfpp fail\n";
+		return;
+	}
+	$text[0] = explode($hash, $text[0]);
+	$text[1] = explode($hash, $text[1]);
+	unset($text[0][0]);
+	unset($text[1][0]);
+	echo count($text[0])."\n";
+	echo count($text[1])."\n";
 	$checkdup = array();
-	foreach ($text as $temp) {
-		if (preg_match("/===(.+?)===/", $temp, $m)) {
-			$page = $m[1];
-			$page = trim($page);
-			$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
-			if (!preg_match("/({{RFPP\||{{y\||拒絕|拒绝|錯誤報告|(?<!请求|請求)(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注)/i", $temp)) {
-				if (in_array($page, $checkdup)) {
-					echo $page." dup\n";
-					continue;
-				}
-				$checkdup []= $page;
-				$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面#'.str_replace(" ", "_", $page).'">'.$page.'</a>';
-				if (isset($list[$page])) {
-					if ($list[$page]["message"] !== $message) {
-						editMessage($list[$page]["message_id"], $message);
-						echo "editMessage: ".$page."\n";
-					} else {
-						echo "oldMessage: ".$page."\n";
+	foreach ($text as $key => $section) {
+		foreach ($section as $temp) {
+			if (preg_match("/===(.+?)===/", $temp, $m)) {
+				$page = $m[1];
+				$page = trim($page);
+				$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
+				if (!preg_match("/({{RFPP\||{{y\||拒絕|拒绝|錯誤報告|(?<!请求|請求)(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注)/i", $temp)) {
+					if (in_array($page, $checkdup)) {
+						echo $page." dup\n";
+						continue;
 					}
-					unset($list[$page]);
+					$checkdup []= $page;
+					$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面#'.str_replace(" ", "_", $page).'">'.$page.'</a>';
+					if ($key === 1) {
+						$message .= " #解除";
+					}
+					if (isset($list[$page])) {
+						if ($list[$page]["message"] !== $message) {
+							editMessage($list[$page]["message_id"], $message);
+							echo "editMessage: ".$page."\n";
+						} else {
+							echo "oldMessage: ".$page."\n";
+						}
+						unset($list[$page]);
+					} else {
+						sendMessage($type, $page, $message);
+						echo "sendMessage: ".$page."\n";
+					}
 				} else {
-					sendMessage($type, $page, $message);
-					echo "sendMessage: ".$page."\n";
+					echo "done: ".$page."\n";
 				}
-			} else {
-				echo "done: ".$page."\n";
 			}
 		}
 	}
