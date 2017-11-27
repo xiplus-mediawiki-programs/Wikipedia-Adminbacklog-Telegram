@@ -14,16 +14,18 @@ stream_context_set_default(
 $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
-$options = getopt("t:d");
+$options = getopt("dr:");
 if (isset($options["d"])) {
 	$G["modify"] = true;
 	echo "force setChatDescription\n";
 }
-if (isset($options["t"])) {
-	$h = floor($options["t"]/100);
-	$m = $options["t"]%100;
-	echo "set to $h:$m\n";
-	$time = $h*3600+$m*60;
+$run = [];
+if (isset($options["r"])) {
+	if (is_array($options["r"])) {
+		$run = $options["r"];
+	} else {
+		$run = [$options["r"]];
+	}
 }
 
 function getDBList($type){
@@ -476,26 +478,52 @@ function setChatDescription(){
 	var_dump($tg);
 }
 
-if (!isset($options["t"]) && $time/60%1 == 0) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
-if ($time/60%15 == 1) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
-if ($time/60%15 == 2) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
-if ($time/60%15 == 3) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
-if ($time/60%15 == 4) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
-if ($time/60%15 == 5) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
-if ($time/60%15 == 6) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
-if ($time/60%15 == 7) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
-if ($time/60%15 == 8) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *([^ ]+?) *===\n\*{{status2}}/", 1, 1, 0]);
-if ($time/60%15 == 9) AFDBHandler();
-if ($time/60%15 == 10) VIPHandler();
-if ($time/60%15 == 11) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
-if ($time/60%15 == 12) RFPPHandler();
-if ($time/60%15 == 13) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *([^ ]+?) *===\n{{status2}}/", 1, 1, 0]);
-if ($time/60%15 == 14) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
-if ($time/60%60 == 1) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 2) PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 3) PageStatusHandler("rfripbe", "#RFR", "Wikipedia:權限申請/申請IP封禁例外權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 4) PageStatusHandler("rfrautoreview", "#RFR", "Wikipedia:權限申請/申請巡查豁免權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 5) PageStatusHandler("rfrcomfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 6) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
-if ($time/60%60 == 7) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (count($run) === 0) {
+	if ($time/60%1 == 0) $run []= "csd";
+	if ($time/60%15 == 1) $run []= "epfull";
+	if ($time/60%15 == 2) $run []= "epsemi";
+	if ($time/60%15 == 3) $run []= "epnone";
+	if ($time/60%15 == 4) $run []= "rm";
+	if ($time/60%15 == 5) $run []= "unblock";
+	if ($time/60%15 == 6) $run []= "affp";
+	if ($time/60%15 == 7) $run []= "drv";
+	if ($time/60%15 == 8) $run []= "uc";
+	if ($time/60%15 == 9) $run []= "afdb";
+	if ($time/60%15 == 10) $run []= "vip";
+	if ($time/60%15 == 11) $run []= "uaa";
+	if ($time/60%15 == 12) $run []= "rfpp";
+	if ($time/60%15 == 13) $run []= "rfcu";
+	if ($time/60%15 == 14) $run []= "revoke";
+	if ($time/60%60 == 1) $run []= "rfrpatrol";
+	if ($time/60%60 == 2) $run []= "rfrrollback";
+	if ($time/60%60 == 3) $run []= "rfripbe";
+	if ($time/60%60 == 4) $run []= "rfrautoreview";
+	if ($time/60%60 == 5) $run []= "rfrcomfirm";
+	if ($time/60%60 == 6) $run []= "rfrmms";
+	if ($time/60%60 == 7) $run []= "rfrawb";
+}
+
+echo "run: ".implode(", ", $run)."\n";
+if (in_array("csd", $run)) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
+if (in_array("epfull", $run)) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
+if (in_array("epsemi", $run)) CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
+if (in_array("epnone", $run)) CategoryMemberHandler("epnone", "#編輯請求 #ENP", "Category:維基百科編輯無保護頁面請求");
+if (in_array("rm", $run)) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
+if (in_array("unblock", $run)) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
+if (in_array("affp", $run)) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
+if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *([^ ]+?) *===\n\*{{status2}}/", 1, 1, 0]);
+if (in_array("afdb", $run)) AFDBHandler();
+if (in_array("vip", $run)) VIPHandler();
+if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
+if (in_array("rfpp", $run)) RFPPHandler();
+if (in_array("rfcu", $run)) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *([^ ]+?) *===\n{{status2}}/", 1, 1, 0]);
+if (in_array("revoke", $run)) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
+if (in_array("rfrpatrol", $run)) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrrollback", $run)) PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfripbe", $run)) PageStatusHandler("rfripbe", "#RFR", "Wikipedia:權限申請/申請IP封禁例外權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrautoreview", $run)) PageStatusHandler("rfrautoreview", "#RFR", "Wikipedia:權限申請/申請巡查豁免權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrcomfirm", $run)) PageStatusHandler("rfrcomfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrmms", $run)) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrawb", $run)) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 setChatDescription();
