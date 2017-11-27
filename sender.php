@@ -247,6 +247,9 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if (in_array($type, ["rfcu", "drv"])) {
 			$url .= '#'.str_replace(" ", "_", $section["page"]);
 		}
+		if ($type === "uaa") {
+			$url .= '#用户报告';
+		}
 		$message = $hashtag.' <a href="'.$url.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
