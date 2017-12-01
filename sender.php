@@ -288,6 +288,7 @@ function AFDBHandler(){
 	));
 	$text = file_get_contents($url);
 	preg_match_all("/{{#lst:(.+?)\|backlog}}/", $text, $m);
+	$checkdup = array();
 	foreach ($m[1] as $page) {
 		echo $page."\n";
 		$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
@@ -302,6 +303,10 @@ function AFDBHandler(){
 			$temp = substr($temp, 0, $end);
 			if (preg_match_all("/^===?.*\[\[:?(.+?)]]===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
+					if(in_array($page2, $checkdup)) {
+						continue;
+					}
+					$checkdup []= $page2;
 					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
