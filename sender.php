@@ -14,7 +14,7 @@ stream_context_set_default(
 $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
-$options = getopt("dr:");
+$options = getopt("dr:", ["del:"]);
 if (isset($options["d"])) {
 	$G["modify"] = true;
 	echo "force setChatDescription\n";
@@ -26,6 +26,16 @@ if (isset($options["r"])) {
 	} else {
 		$run = [$options["r"]];
 	}
+}
+if (isset($options["del"])) {
+	$res = getMessageFromDB($options["del"]);
+	if ($res !== false) {
+		deleteMessage($res["message_id"], $res["starttime"]);
+		echo "deleteMessage: ".$res["type"]." ".$res["title"]."\n";
+	} else {
+		echo "deleteMessage: message_id not found\n";
+	}
+	$run = ["none"];
 }
 
 function getDBList($type){
