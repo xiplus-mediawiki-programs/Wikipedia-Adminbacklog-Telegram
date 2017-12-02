@@ -424,10 +424,11 @@ function RFPPHandler(){
 	foreach ($text as $key => $section) {
 		foreach ($section as $temp) {
 			if (preg_match("/===(.+?)===/", $temp, $m)) {
+				$temp = preg_replace("/===.+?=== *\n.+\n/", "", $temp);
 				$page = $m[1];
 				$page = trim($page);
 				$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
-				if (!preg_match("/({{RFPP\||{{y\||拒絕|拒绝|錯誤報告|(?<!请求|請求)(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|已被(半|全|白紙)?(保護|保护)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注)/i", $temp)) {
+				if (!preg_match("/({{RFPP\||{{y\||拒絕|拒绝|錯誤報告|(永久|臨時|临时)?(半|全|白紙)?(保護|保护)\d+(日|周|週|個月)|(已被|永久)(半|全|白紙)?(保護|保护)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注|再提交)/i", $temp)) {
 					if (in_array($page, $checkdup)) {
 						echo $page." dup\n";
 						continue;
