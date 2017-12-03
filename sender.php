@@ -234,6 +234,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	}
 }
 function PageMatchList($page, $regex){
+	// $regex[] 1=>page 2=>title 3=>status
 	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
 		"title" => $page,
 		"action" => "raw"
@@ -251,6 +252,7 @@ function PageMatchList($page, $regex){
 	return $list;
 }
 function PageStatusHandler($type, $hashtag, $page, $regex){
+	// $regex[] 1=>page 2=>title 3=>status
 	echo $type."\n";
 	$list = getDBList($type);
 	$checkdup = array();
@@ -262,9 +264,15 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if ($type === "uaa") {
 			$url .= '#用户报告';
 		}
+		if ($type === "rrd") {
+			$url .= '#删除请求';
+		}
 		$message = $hashtag.' <a href="'.$url.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
+		}
+		if ($type === "rrd" && strtolower($section["status"]) === "oh") {
+			$message .= " (#OH)";
 		}
 		if (in_array($section["title"], $checkdup)) {
 			echo $section["title"]." dup\n";
@@ -496,20 +504,22 @@ function setChatDescription(){
 
 if (count($run) === 0) {
 	if ($time/60%1 == 0) $run []= "csd";
-	if ($time/60%15 == 1) $run []= "epfull";
-	if ($time/60%15 == 2) $run []= "epsemi";
-	if ($time/60%15 == 3) $run []= "epnone";
-	if ($time/60%15 == 4) $run []= "rm";
-	if ($time/60%15 == 5) $run []= "unblock";
-	if ($time/60%15 == 6) $run []= "affp";
-	if ($time/60%15 == 7) $run []= "drv";
-	if ($time/60%15 == 8) $run []= "uc";
-	if ($time/60%15 == 9) $run []= "afdb";
-	if ($time/60%15 == 10) $run []= "vip";
-	if ($time/60%15 == 11) $run []= "uaa";
-	if ($time/60%15 == 12) $run []= "rfpp";
-	if ($time/60%15 == 13) $run []= "rfcu";
-	if ($time/60%15 == 14) $run []= "revoke";
+	if ($time/60%20 == 1) $run []= "epfull";
+	if ($time/60%20 == 2) $run []= "epsemi";
+	if ($time/60%20 == 3) $run []= "epnone";
+	if ($time/60%20 == 4) $run []= "rm";
+	if ($time/60%20 == 5) $run []= "unblock";
+	if ($time/60%20 == 6) $run []= "affp";
+	if ($time/60%20 == 7) $run []= "drv";
+	if ($time/60%20 == 8) $run []= "uc";
+	if ($time/60%20 == 9) $run []= "afdb";
+	if ($time/60%20 == 10) $run []= "vip";
+	if ($time/60%20 == 11) $run []= "uaa";
+	if ($time/60%20 == 12) $run []= "rfpp";
+	if ($time/60%20 == 13) $run []= "rfcu";
+	if ($time/60%20 == 14) $run []= "revoke";
+	if ($time/60%20 == 14) $run []= "revoke";
+	if ($time/60%20 == 15) $run []= "rrd";
 	if ($time/60%60 == 1) $run []= "rfrpatrol";
 	if ($time/60%60 == 2) $run []= "rfrrollback";
 	if ($time/60%60 == 3) $run []= "rfripbe";
@@ -542,4 +552,5 @@ if (in_array("rfrautoreview", $run)) PageStatusHandler("rfrautoreview", "#RFR", 
 if (in_array("rfrcomfirm", $run)) PageStatusHandler("rfrcomfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrmms", $run)) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrawb", $run)) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|<!--不要修改本参数-->)\n\|article = (.+?) *\n/i", 2, 2, 1]);
 setChatDescription();
