@@ -15,10 +15,6 @@ $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
 $options = getopt("dr:", ["del:"]);
-if (isset($options["d"])) {
-	$G["modify"] = true;
-	echo "force setChatDescription\n";
-}
 $run = [];
 if (isset($options["r"])) {
 	if (is_array($options["r"])) {
@@ -26,6 +22,10 @@ if (isset($options["r"])) {
 	} else {
 		$run = [$options["r"]];
 	}
+}
+if (isset($options["d"])) {
+	$run []= "description";
+	echo "force setChatDescription\n";
 }
 if (isset($options["del"])) {
 	$res = getMessageFromDB($options["del"]);
@@ -101,7 +101,7 @@ function sendMessage($type, $title, $message){
 		return;
 	}
 	echo "\n";
-	$G["modify"] = true;
+	$run []= "description";
 }
 function editMessage($message_id, $message){
 	global $C, $G;
@@ -137,7 +137,7 @@ function editMessage($message_id, $message){
 		return;
 	}
 	echo "\n";
-	$G["modify"] = true;
+	$run []= "description";
 }
 function deleteMessage($message_id, $starttime){
 	global $C, $G;
@@ -173,7 +173,7 @@ function deleteMessage($message_id, $starttime){
 		return;
 	}
 	echo "\n";
-	$G["modify"] = true;
+	$run []= "description";
 }
 function getCategoryMember($category, $cmtype){
 	global $C, $G;
@@ -473,9 +473,6 @@ function RFPPHandler(){
 }
 function setChatDescription(){
 	global $C, $G;
-	if (!isset($G["modify"]) || !$G["modify"]) {
-		return;
-	}
 	echo "setChatDescription\n";
 	$sth = $G["db"]->prepare("SELECT COUNT(*) AS `count`, `type` FROM `{$C['DBTBprefix']}` GROUP BY `type`");
 	$sth->execute();
@@ -557,4 +554,4 @@ if (in_array("rfrmms", $run)) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權
 if (in_array("rfrawb", $run)) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrflood", $run)) PageStatusHandler("rfrflood", "#RFR", "Wikipedia:机器用户/申请", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|<!--不要修改本参数-->)\n\|article = (.+?) *\n/i", 2, 2, 1]);
-setChatDescription();
+if (in_array("description", $run)) setChatDescription();
