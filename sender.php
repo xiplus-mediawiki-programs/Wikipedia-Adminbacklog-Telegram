@@ -529,6 +529,7 @@ if (count($run) === 0) {
 	if ($time/60%60 == 5) $run []= "rfrcomfirm";
 	if ($time/60%60 == 6) $run []= "rfrmms";
 	if ($time/60%60 == 7) $run []= "rfrawb";
+	if ($time/60%60 == 8) $run []= "rfrflood";
 }
 
 echo "run: ".implode(", ", $run)."\n";
@@ -554,5 +555,6 @@ if (in_array("rfrautoreview", $run)) PageStatusHandler("rfrautoreview", "#RFR", 
 if (in_array("rfrcomfirm", $run)) PageStatusHandler("rfrcomfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrmms", $run)) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrawb", $run)) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+if (in_array("rfrflood", $run)) PageStatusHandler("rfrflood", "#RFR", "Wikipedia:机器用户/申请", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|<!--不要修改本参数-->)\n\|article = (.+?) *\n/i", 2, 2, 1]);
 setChatDescription();
