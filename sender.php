@@ -65,7 +65,7 @@ function getMessageFromDB($message_id){
 	return $row;
 }
 function sendMessage($type, $title, $message){
-	global $C, $G;
+	global $C, $G, $run;
 	echo "sendMessage: ".$title." / ".$message;
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
@@ -104,7 +104,7 @@ function sendMessage($type, $title, $message){
 	$run []= "description";
 }
 function editMessage($message_id, $message){
-	global $C, $G;
+	global $C, $G, $run;
 	echo "editMessage: ".$message_id." / ".$message;
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/editMessageText?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
@@ -140,7 +140,7 @@ function editMessage($message_id, $message){
 	$run []= "description";
 }
 function deleteMessage($message_id, $starttime){
-	global $C, $G;
+	global $C, $G, $run;
 	if (strtotime($starttime) < time()-86400*2) {
 		editMessage($message_id, "#已完成工作 ■■■■■");
 	} else {
