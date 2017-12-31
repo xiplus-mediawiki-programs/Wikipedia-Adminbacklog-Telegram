@@ -538,12 +538,12 @@ if (in_array("rm", $run)) CategoryMemberHandler("rm", "#移動請求", "Category
 if (in_array("unblock", $run)) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁申诉", "page");
 if (in_array("affp", $run)) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n{{bugstatus\|status=new\|/", 2, 1, 0]);
 if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
-if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *([^ ]+?) *===\n\*{{status2}}/", 1, 1, 0]);
+if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *(.+?) *===\n\*{{status2}}/", 1, 1, 0]);
 if (in_array("afdb", $run)) AFDBHandler();
 if (in_array("vip", $run)) VIPHandler();
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
-if (in_array("rfcu", $run)) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *([^ ]+?) *===\n{{status2}}/", 1, 1, 0]);
+if (in_array("rfcu", $run)) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *(.+?) *===\n{{status2}}/", 1, 1, 0]);
 if (in_array("revoke", $run)) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 if (in_array("rfrpatrol", $run)) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrrollback", $run)) PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
