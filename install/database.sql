@@ -14,7 +14,7 @@ CREATE TABLE `Adminbacklog` (
   `title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `starttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `message_id` int(11) NOT NULL,
-  `message` varchar(1000) NOT NULL
+  `message` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Adminbacklog_autodel` (
