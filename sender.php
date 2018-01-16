@@ -259,8 +259,11 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	$list = getDBList($type);
 	$checkdup = array();
 	foreach (PageMatchList($page, $regex) as $section) {
+		if ($type === "cv" && $section["status"] > time()) {
+			continue;
+		}
 		$url = 'https://zh.wikipedia.org/wiki/'.rawurlencode($page);
-		if (in_array($type, ["rfcu", "drv"])) {
+		if (in_array($type, ["rfcu", "drv", "cv"])) {
 			$url .= '#'.str_replace(" ", "_", $section["page"]);
 		}
 		if ($type === "uaa") {
@@ -527,6 +530,7 @@ if (count($run) === 0) {
 	if ($time/60%60 == 6) $run []= "rfrmms";
 	if ($time/60%60 == 7) $run []= "rfrawb";
 	if ($time/60%60 == 8) $run []= "rfrflood";
+	if ($time/60%60 == 9) $run []= "cv";
 }
 
 echo "run: ".implode(", ", $run)."\n";
@@ -554,4 +558,5 @@ if (in_array("rfrmms", $run)) PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權
 if (in_array("rfrawb", $run)) PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrflood", $run)) PageStatusHandler("rfrflood", "#RFR", "Wikipedia:机器用户/申请", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|<!--不要修改本参数-->)\n\|article = (.+?) *\n/i", 2, 2, 1]);
+if (in_array("cv", $run)) PageStatusHandler("cv", "#CV", "Wikipedia:頁面存廢討論/疑似侵權", ["/{{CopyvioEntry\|1=(.+?)\|time=(\d+)/i", 1, 1, 2]);
 if (in_array("description", $run)) setChatDescription();
