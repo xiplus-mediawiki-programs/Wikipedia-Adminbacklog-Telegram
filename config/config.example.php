@@ -3,6 +3,8 @@
 $C['token'] = 'token';
 $C['chat_id'] = 'chat_id';
 
+$C['baseurl'] = 'https://zh.wikipedia.org/wiki/';
+
 $C["allowsapi"] = array("cli");
 
 $C["DBhost"] = 'localhost';

@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__.'/config/config.php');
+require_once(__DIR__.'/mediawikiurlencode.php');
 date_default_timezone_set('UTC');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
@@ -190,10 +191,12 @@ function getCategoryMember($category, $cmtype){
 	return $list["query"]["categorymembers"];
 }
 function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subcat|file"){
+	global $C;
 	echo $type."\n";
 	$list = getDBList($type);
 	foreach (getCategoryMember($category, $cmtype) as $page) {
-		$message = $hashtag.' <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page["title"]).'">'.$page["title"].'</a>';
+		$url = mediawikiurlencode($C["baseurl"], $page["title"]);
+		$message = $hashtag.' <a href="'.$url.'">'.$page["title"].'</a>';
 		if ($type === "csd") {
 			$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
 				"title" => $page["title"],
@@ -254,6 +257,7 @@ function PageMatchList($page, $regex){
 	return $list;
 }
 function PageStatusHandler($type, $hashtag, $page, $regex){
+	global $C;
 	// $regex[] 1=>page 2=>title 3=>status
 	echo $type."\n";
 	$list = getDBList($type);
@@ -262,16 +266,16 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if ($type === "cv" && $section["status"] > time()) {
 			continue;
 		}
-		$url = 'https://zh.wikipedia.org/wiki/'.rawurlencode($page);
 		if (in_array($type, ["rfcu", "drv", "cv"])) {
-			$url .= '#'.str_replace(" ", "_", $section["page"]);
+			$fragment = $section["page"];
+		} else if ($type === "uaa") {
+			$fragment = '#用户报告';
+		} else if ($type === "rrd") {
+			$fragment = '#删除请求';
+		} else {
+			$fragment = "";
 		}
-		if ($type === "uaa") {
-			$url .= '#用户报告';
-		}
-		if ($type === "rrd") {
-			$url .= '#删除请求';
-		}
+		$url = mediawikiurlencode($C["baseurl"], $page, $fragment);
 		$message = $hashtag.' <a href="'.$url.'">'.$section["page"].'</a>';
 		if ($type === "drv") {
 			$message .= " (#".$section["status"].")";
@@ -303,6 +307,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 	}
 }
 function AFDBHandler(){
+	global $C;
 	echo "afdb\n";
 	$list = getDBList("afdb");
 	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
@@ -330,7 +335,9 @@ function AFDBHandler(){
 						continue;
 					}
 					$checkdup []= $page2;
-					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
+					$url1 = mediawikiurlencode($C["baseurl"], $page2);
+					$url2 = mediawikiurlencode($C["baseurl"], $page, $page2);
+					$message = '#存廢積壓 <a href="'.$url1.'">'.$page2.'</a> (<a href="'.$url2.'">'.substr($page, 41, 5).'</a>)';
 					echo $message."\n";
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
@@ -347,7 +354,8 @@ function AFDBHandler(){
 				}
 			} else if (preg_match_all("/^===? *{{al\|(.+?)}} *===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
-					$message = '#存廢積壓 '.$page2.' (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
+					$url = mediawikiurlencode($C["baseurl"], $page, $page2);
+					$message = '#存廢積壓 '.$page2.' (<a href="'.$url.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
@@ -370,6 +378,7 @@ function AFDBHandler(){
 	}
 }
 function VIPHandler(){
+	global $C;
 	echo "vip\n";
 	$list = getDBList("vip");
 	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
@@ -391,7 +400,8 @@ function VIPHandler(){
 					continue;
 				}
 				$checkdup []= $user;
-				$message = '#VIP <a href="https://zh.wikipedia.org/wiki/Wikipedia:当前的破坏#{{vandal|'.str_replace(" ", "_", $user).'}}">'.$user.'</a>';
+				$url = mediawikiurlencode($C["baseurl"], 'Wikipedia:当前的破坏', '{{vandal|'.$user.'}}');
+				$message = '#VIP <a href="'.$url.'">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
 						editMessage($list[$user]["message_id"], $message);
@@ -413,6 +423,7 @@ function VIPHandler(){
 	}
 }
 function RFPPHandler(){
+	global $C;
 	$type = "rfpp";
 	echo $type."\n";
 	$list = getDBList($type);
@@ -448,7 +459,8 @@ function RFPPHandler(){
 						continue;
 					}
 					$checkdup []= $page;
-					$message = '#RFPP <a href="https://zh.wikipedia.org/wiki/Wikipedia:请求保护页面#'.str_replace(" ", "_", $page).'">'.$page.'</a>';
+					$url = mediawikiurlencode($C["baseurl"], 'Wikipedia:请求保护页面', $page);
+					$message = '#RFPP <a href="'.$url.'">'.$page.'</a>';
 					if ($key === 1) {
 						$message .= " #解除";
 					}
