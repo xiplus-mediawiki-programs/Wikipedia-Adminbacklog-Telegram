@@ -330,7 +330,8 @@ function AFDBHandler(){
 						continue;
 					}
 					$checkdup []= $page2;
-					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page).'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
+					$message = '#存廢積壓 <a href="https://zh.wikipedia.org/wiki/'.rawurlencode($page2).'">'.$page2.'</a> (<a href="https://zh.wikipedia.org/wiki/'.$page.'#'.$page2.'">'.substr($page, 41, 5).'</a>)';
+					echo $message."\n";
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
 							editMessage($list[$page2]["message_id"], $message);
