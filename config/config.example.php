@@ -38,7 +38,7 @@ $C["typelist"] = [
 ];
 $C["ChatDescription"] = "中文維基百科管理員積壓工作直播
 目前有%sum%項積壓工作
-#速刪(%csd%) #hangon #繁簡 | #RRD(%rrd%) | #CV(%cv%)
+#速刪(%csd%) #hangon #繁簡 | #RRD(%rrd%) | #侵權(%cv%)
 #VIP(%vip%) | #RFPP(%rfpp%) | #封禁申訴(%unblock%) | #UAA(%uaa%)
 #存廢積壓(%afdb%) | #存廢覆核(%drv%) #OH #新申請 | #除權(%revoke%)
 #編輯請求(%ep%) #EFP(%epfull%) #ESP(%epsemi%) #ENP(%epnone%) | #RFR(%rfr%)
