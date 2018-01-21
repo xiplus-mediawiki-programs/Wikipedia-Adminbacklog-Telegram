@@ -125,8 +125,10 @@ function editMessage($message_id, $message){
 		echo "\tedit fail\n";
 		echo $url."\n";
 		var_dump($tg);
-		writelog("edit fail: ".$message_id." / ".$message." / ".$tgs);
-		return;
+		if (!in_array($tg["description"], ["Bad Request: message is not modified"])) {
+			writelog("edit fail: ".$message_id." / ".$message." / ".$tgs);
+			return;
+		}
 	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
 	$sth->bindValue(":message", $message);
@@ -161,9 +163,9 @@ function deleteMessage($message_id, $starttime){
 			echo $url."\n";
 			var_dump($tg);
 			if (!in_array($tg["description"], ["Bad Request: message to delete not found"])) {
+				writelog("delete: ".$message_id." / ".$tgs." / ".json_encode(getMessageFromDB($message_id)), JSON_UNESCAPED_UNICODE);
 				return;
 			}
-			writelog("delete: ".$message_id." / ".$tgs." / ".json_encode(getMessageFromDB($message_id)), JSON_UNESCAPED_UNICODE);
 		}
 	}
 	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
