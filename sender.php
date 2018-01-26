@@ -271,9 +271,9 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if (in_array($type, ["rfcu", "drv", "cv"])) {
 			$fragment = $section["page"];
 		} else if ($type === "uaa") {
-			$fragment = '#用户报告';
+			$fragment = '用户报告';
 		} else if ($type === "rrd") {
-			$fragment = '#删除请求';
+			$fragment = '删除请求';
 		} else {
 			$fragment = "";
 		}
