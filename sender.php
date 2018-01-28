@@ -268,7 +268,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if ($type === "cv" && $section["status"] > time()) {
 			continue;
 		}
-		if (in_array($type, ["rfcu", "drv", "cv"])) {
+		if (in_array($type, ["rfcu", "drv", "cv", "uc"])) {
 			$fragment = $section["page"];
 		} else if ($type === "uaa") {
 			$fragment = '用户报告';
