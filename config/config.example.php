@@ -53,3 +53,5 @@ $C["autodellimit"] = [
 	["photo", "/.*/", 60*60*24],
 	["unknown", "/.*/", 60*60*24]
 ];
+
+$C['module']['mediawikiurlencode'] = __DIR__.'/function/Mediawiki-urlencode/mediawikiurlencode.php';
