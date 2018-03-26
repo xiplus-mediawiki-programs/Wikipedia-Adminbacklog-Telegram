@@ -29,11 +29,11 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			));
 			$text = file_get_contents($url);
 			if (preg_match("/{{d\|bot=Jimmy-bot\|([^|}]+)/", $text, $m)) {
-				$message .= " (".htmlentities($m[1]).")";
+				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (preg_match("/{{(?:d|delete|csd|速删)\|(.+?)}}/i", $text, $m)) {
-				$message .= " (".htmlentities($m[1]).")";
+				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
-				$message .= " (".htmlentities($m[1]).")";
+				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (strpos($text, "User:Liangent-bot/template/ntvc-mixed-move")) {
 				$message .= " (#繁簡)";
 			} else if (preg_match("/{{(Notchinese|Notmandarin)\|/i", $text)) {
