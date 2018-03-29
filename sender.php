@@ -18,7 +18,15 @@ stream_context_set_default(
 $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
-$options = getopt("dr:", ["del:"]);
+$options = getopt("dr:f", ["del:"]);
+
+$lockfile = __DIR__."/executing.lock";
+$lock = @file_get_contents($lockfile);
+if ($lock !== false && strlen($lock) > 0 && !isset($options["f"])) {
+	exit("Another process is running.\n");
+}
+file_put_contents($lockfile, "Yes");
+
 $run = [];
 if (isset($options["r"])) {
 	if (is_array($options["r"])) {
@@ -98,3 +106,5 @@ if (in_array("rfrflood", $run)) PageStatusHandler("rfrflood", "#RFR", "Wikipedia
 if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|新申請.*?)\n\|article = (.+?) *\n/i", 2, 2, 1]);
 if (in_array("cv", $run)) PageStatusHandler("cv", "#侵權", "Wikipedia:頁面存廢討論/疑似侵權", ["/{{CopyvioEntry\|1=(.+?)\|time=(\d+)/i", 1, 1, 2]);
 if (in_array("description", $run)) setChatDescription();
+
+file_put_contents($lockfile, "");
