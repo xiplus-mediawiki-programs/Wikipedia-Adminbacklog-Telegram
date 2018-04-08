@@ -93,7 +93,7 @@ if (in_array("afdb", $run)) AFDBHandler();
 if (in_array("vip", $run)) VIPHandler();
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
-if (in_array("rfcu", $run)) PageStatusHandler("rfcu", "#RFCU", "Wikipedia:用戶查核請求", ["/=== *(.+?) *===\n{{status2}}/", 1, 1, 0]);
+if (in_array("rfcu", $run)) RFCUHandler();
 if (in_array("revoke", $run)) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 if (in_array("rfrpatrol", $run)) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
 if (in_array("rfrrollback", $run)) PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);

@@ -317,3 +317,51 @@ function RFPPHandler(){
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
+
+function RFCUHandler(){
+	global $C;
+	$type = "rfcu";
+	echo $type."\n";
+	$list = getDBList($type);
+	$url = 'https://meta.wikimedia.org/w/index.php?'.http_build_query(array(
+		"title" => "Steward requests/Checkuser",
+		"action" => "raw"
+	));
+	$text = file_get_contents($url);
+	$hash = md5(time());
+	$text = preg_replace("/^(===.+?@.+?===)$/m", $hash."$1", $text);
+	$text = explode($hash, $text);
+	unset($text[0]);
+	$checkdup = array();
+	foreach ($text as $temp) {
+		if (preg_match("/===\s*([^@]+)@(zh\.wikipedia|zhwiki)\s*===/i", $temp, $m)) {
+			$user = $m[1];
+			$project = $m[2];
+			if (preg_match("/^\s*\|\s*status\s*=\s*$/m", $temp)) {
+				if (in_array($user, $checkdup)) {
+					echo $user." dup\n";
+					continue;
+				}
+				$checkdup []= $user;
+				$url = mediawikiurlencode('https://meta.wikimedia.org/wiki/', 'Steward_requests/Checkuser', $user.'@'.$project);
+				$message = '#RFCU <a href="'.$url.'">'.$user.'</a>';
+				if (isset($list[$user])) {
+					if ($list[$user]["message"] !== $message) {
+						editMessage($list[$user]["message_id"], $message);
+						echo "editMessage: ".$user."\n";
+					} else {
+						echo "oldMessage: ".$user."\n";
+					}
+					unset($list[$user]);
+				} else {
+					sendMessage($type, $user, $message);
+					echo "sendMessage: ".$user."\n";
+				}
+			}
+		}
+	}
+	foreach ($list as $page) {
+		deleteMessage($page["message_id"], $page["starttime"]);
+		echo "deleteMessage: ".$page["title"]."\n";
+	}
+}
