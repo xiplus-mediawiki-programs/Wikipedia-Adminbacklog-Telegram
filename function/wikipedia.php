@@ -337,7 +337,7 @@ function RFCUHandler(){
 		if (preg_match("/===\s*([^@]+)@(zh\.wikipedia|zhwiki)\s*===/i", $temp, $m)) {
 			$user = $m[1];
 			$project = $m[2];
-			if (preg_match("/^\s*\|\s*status\s*=\s*$/m", $temp)) {
+			if (preg_match("/^\s*\|\s*status\s*=\s*(<!--don't change this line-->)?\s*$/m", $temp)) {
 				if (in_array($user, $checkdup)) {
 					echo $user." dup\n";
 					continue;
