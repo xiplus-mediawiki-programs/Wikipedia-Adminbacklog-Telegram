@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__.'/config/config.php');
+require_once(__DIR__.'/function/function.php');
 require_once(__DIR__.'/function/database.php');
 require_once(__DIR__.'/function/wikipedia.php');
 require_once(__DIR__.'/function/telegram.php');
@@ -107,4 +108,4 @@ if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版
 if (in_array("cv", $run)) PageStatusHandler("cv", "#侵權", "Wikipedia:頁面存廢討論/疑似侵權", ["/{{CopyvioEntry\|1=(.+?)\|time=(\d+)/i", 1, 1, 2]);
 if (in_array("description", $run)) setChatDescription();
 
-file_put_contents($lockfile, "");
+unlock();

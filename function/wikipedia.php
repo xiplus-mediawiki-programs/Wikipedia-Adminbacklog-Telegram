@@ -11,6 +11,10 @@ function getCategoryMember($category, $cmtype){
 		"cmlimit" => "max"
 	));
 	$list = file_get_contents($url);
+	if ($list === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	$list = json_decode($list, true);
 	return $list["query"]["categorymembers"];
 }
@@ -28,6 +32,10 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				"action" => "raw"
 			));
 			$text = file_get_contents($url);
+			if ($text === false) {
+				unlock();
+				exit("network error!\n");
+			}
 			if (preg_match("/{{d\|bot=Jimmy-bot\|([^|}]+)/", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (preg_match("/{{(?:d|delete|csd|速删)\|(.+?)}}/i", $text, $m)) {
@@ -71,6 +79,10 @@ function PageMatchList($page, $regex){
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
+	if ($text === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	preg_match_all($regex[0], $text, $m);
 	$list = array();
 	foreach ($m[0] as $key => $page) {
@@ -143,6 +155,10 @@ function AFDBHandler(){
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
+	if ($text === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	preg_match_all("/{{#lst:(.+?)\|backlog}}/", $text, $m);
 	$checkdup = array();
 	foreach ($m[1] as $page) {
@@ -152,6 +168,10 @@ function AFDBHandler(){
 			"action" => "raw"
 		));
 		$text = file_get_contents($url);
+		if ($text === false) {
+			unlock();
+			exit("network error!\n");
+		}
 		$text = explode("<section begin=backlog />", $text);
 		unset($text[0]);
 		foreach ($text as $temp) {
@@ -215,6 +235,10 @@ function VIPHandler(){
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
+	if ($text === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	$hash = md5(time());
 	$text = preg_replace("/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m", $hash."$1", $text);
 	$text = explode($hash, $text);
@@ -262,6 +286,10 @@ function RFPPHandler(){
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
+	if ($text === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	$hash = md5(time());
 	$text = preg_replace("/^(===)/m", $hash."$1", $text);
 	$text = explode("== 请求解除保护 ==", $text);
@@ -328,6 +356,10 @@ function RFCUHandler(){
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
+	if ($text === false) {
+		unlock();
+		exit("network error!\n");
+	}
 	$hash = md5(time());
 	$text = preg_replace("/^(===.+?@.+?===)$/m", $hash."$1", $text);
 	$text = explode($hash, $text);
