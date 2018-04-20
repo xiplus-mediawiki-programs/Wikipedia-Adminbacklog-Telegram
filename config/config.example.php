@@ -54,4 +54,6 @@ $C["autodellimit"] = [
 	["unknown", "/.*/", 60*60*24]
 ];
 
+$C["renewlimit"] = 3600 * 47;
+
 $C['module']['mediawikiurlencode'] = __DIR__.'/function/Mediawiki-urlencode/mediawikiurlencode.php';
