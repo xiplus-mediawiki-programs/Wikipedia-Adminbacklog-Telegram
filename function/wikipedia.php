@@ -202,6 +202,7 @@ function AFDBHandler(){
 				}
 			} else if (preg_match_all("/^===? *{{al\|(.+?)}} *===?$/m", $temp, $m2)) {
 				foreach ($m2[1] as $page2) {
+					$page2 = str_replace("|", "、", $page2);
 					$url = mediawikiurlencode($C["baseurl"], $page, $page2);
 					$message = '#存廢積壓 '.$page2.' (<a href="'.$url.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
