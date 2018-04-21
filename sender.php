@@ -65,6 +65,7 @@ if (count($run) === 0) {
 	if ($time/60%20 == 10) $run []= "vip";
 	if ($time/60%20 == 11) $run []= "uaa";
 	if ($time/60%20 == 12) $run []= "rfpp";
+	if ($time/60%20 == 13) $run []= "rfcuham";
 	if ($time/60%20 == 13) $run []= "rfcu";
 	if ($time/60%20 == 14) $run []= "revoke";
 	if ($time/60%20 == 14) $run []= "revoke";
@@ -94,6 +95,7 @@ if (in_array("afdb", $run)) AFDBHandler();
 if (in_array("vip", $run)) VIPHandler();
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
+if (in_array("rfcuham", $run)) PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|\|OH)/i", 1, 1, 0]);
 if (in_array("rfcu", $run)) RFCUHandler();
 if (in_array("revoke", $run)) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 if (in_array("rfrpatrol", $run)) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
