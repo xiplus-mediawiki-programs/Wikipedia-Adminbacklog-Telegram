@@ -10,13 +10,13 @@ $time = time();
 echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
 foreach ($C["renewlimit"] as $renewlimit) {
-	$sth = $G["db"]->prepare("SELECT *, RAND() AS `rnd` FROM `{$C['DBTBprefix']}` WHERE `starttime` < :starttime ORDER BY `rnd` LIMIT 1");
-	$sth->bindValue(":starttime", date("Y-m-d H:i:s", time()-$renewlimit));
+	$sth = $G["db"]->prepare("SELECT *, RAND() AS `rnd` FROM `{$C['DBTBprefix']}` WHERE `messagetime` < :messagetime ORDER BY `rnd` LIMIT 1");
+	$sth->bindValue(":messagetime", date("Y-m-d H:i:s", time()-$renewlimit));
 	$sth->execute();
 	$res = $sth->fetch(PDO::FETCH_ASSOC);
 	if ($res !== false) {
-		deleteMessage($res["message_id"], $res["starttime"]);
-		sendMessage($res["type"], $res["title"], $res["message"]);
+		deleteMessage($res["message_id"], $res["messagetime"]);
+		sendMessage($res["type"], $res["title"], $res["message"], $res["starttime"]);
 		break;
 	}
 }

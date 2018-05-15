@@ -1,13 +1,29 @@
 <?php
 
-function sendMessage($type, $title, $message){
+function getago($starttime=null) {
+	if (is_null($starttime)) {
+		$starttime = time();
+	} else {
+		$starttime = strtotime($starttime);
+	}
+	$ago = round((time()-$starttime)/86400);
+	if ($ago == 0) {
+		$ago = "新";
+	} else {
+		$ago .= "天";
+	}
+	return $ago;
+}
+
+function sendMessage($type, $title, $message, $starttime=null){
 	global $C, $G, $run;
 	echo "sendMessage: ".$title." / ".$message;
+	$ago = getago($starttime);
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"parse_mode" => "HTML",
 		"disable_web_page_preview" => true,
-		"text" => $message
+		"text" => $message." ".$ago
 	));
 	$tgs = @file_get_contents($url);
 	if ($tgs === false) {
@@ -25,10 +41,11 @@ function sendMessage($type, $title, $message){
 	}
 	$message_id = $tg["result"]["message_id"];
 	echo "\t".$message_id;
-	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :message_id, :message)");
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `messagetime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :messagetime, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
-	$sth->bindValue(":starttime", date("Y-m-d H:i:s"));
+	$sth->bindValue(":starttime", $starttime);
+	$sth->bindValue(":messagetime", date("Y-m-d H:i:s"));
 	$sth->bindValue(":message_id", $message_id);
 	$sth->bindValue(":message", $message);
 	$res = $sth->execute();
@@ -40,15 +57,16 @@ function sendMessage($type, $title, $message){
 	$run []= "description";
 }
 
-function editMessage($message_id, $message){
+function editMessage($message_id, $message, $starttime=null){
 	global $C, $G, $run;
 	echo "editMessage: ".$message_id." / ".$message;
+	$ago = getago($starttime);
 	$url = 'https://api.telegram.org/bot'.$C['token'].'/editMessageText?'.http_build_query(array(
 		"chat_id" => $C["chat_id"],
 		"message_id" => $message_id,
 		"parse_mode" => "HTML",
 		"disable_web_page_preview" => true,
-		"text" => $message
+		"text" => $message." ".$ago
 	));
 	$tgs = @file_get_contents($url);
 	if ($tgs === false) {
