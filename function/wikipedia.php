@@ -55,7 +55,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		}
 		if (isset($list[$page["title"]])) {
 			if ($list[$page["title"]]["message"] !== $message) {
-				editMessage($list[$page["title"]]["message_id"], $message);
+				editMessage($list[$page["title"]]["message_id"], $message, $list[$page["title"]]["starttime"]);
 				echo "editMessage: ".$page["title"]."\n";
 			} else {
 				echo "oldMessage: ".$page["title"]."\n";
@@ -67,7 +67,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["starttime"]);
+		deleteMessage($page["message_id"], $page["messagetime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -129,7 +129,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		$checkdup []= $section["title"];
 		if (isset($list[$section["title"]])) {
 			if ($list[$section["title"]]["message"] !== $message) {
-				editMessage($list[$section["title"]]["message_id"], $message);
+				editMessage($list[$section["title"]]["message_id"], $message, $list[$section["title"]]["starttime"]);
 				echo "editMessage: ".$section["title"]."\n";
 			} else {
 				echo "oldMessage: ".$section["title"]."\n";
@@ -141,7 +141,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		}
 	}
 	foreach ($list as $section) {
-		deleteMessage($section["message_id"], $section["starttime"]);
+		deleteMessage($section["message_id"], $section["messagetime"]);
 		echo "deleteMessage: ".$section["title"]."\n";
 	}
 }
@@ -189,7 +189,7 @@ function AFDBHandler(){
 					echo $message."\n";
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
-							editMessage($list[$page2]["message_id"], $message);
+							editMessage($list[$page2]["message_id"], $message, $list[$page2]["starttime"]);
 							echo "editMessage: ".$page2."\n";
 						} else {
 							echo "oldMessage: ".$page2."\n";
@@ -211,7 +211,7 @@ function AFDBHandler(){
 					$message = '#存廢積壓 '.$page2.' (<a href="'.$url.'">'.substr($page, 41, 5).'</a>)';
 					if (isset($list[$page2])) {
 						if ($list[$page2]["message"] !== $message) {
-							editMessage($list[$page2]["message_id"], $message);
+							editMessage($list[$page2]["message_id"], $message, $list[$page2]["starttime"]);
 							echo "editMessage: ".$page2."\n";
 						} else {
 							echo "oldMessage: ".$page2."\n";
@@ -226,7 +226,7 @@ function AFDBHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["starttime"]);
+		deleteMessage($page["message_id"], $page["messagetime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -262,7 +262,7 @@ function VIPHandler(){
 				$message = '#VIP <a href="'.$url.'">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
-						editMessage($list[$user]["message_id"], $message);
+						editMessage($list[$user]["message_id"], $message, $list[$user]["starttime"]);
 						echo "editMessage: ".$user."\n";
 					} else {
 						echo "oldMessage: ".$user."\n";
@@ -276,7 +276,7 @@ function VIPHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["starttime"]);
+		deleteMessage($page["message_id"], $page["messagetime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -329,7 +329,7 @@ function RFPPHandler(){
 					}
 					if (isset($list[$page])) {
 						if ($list[$page]["message"] !== $message) {
-							editMessage($list[$page]["message_id"], $message);
+							editMessage($list[$page]["message_id"], $message, $list[$page]["starttime"]);
 							echo "editMessage: ".$page."\n";
 						} else {
 							echo "oldMessage: ".$page."\n";
@@ -346,7 +346,7 @@ function RFPPHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["starttime"]);
+		deleteMessage($page["message_id"], $page["messagetime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -384,7 +384,7 @@ function RFCUHandler(){
 				$message = '#RFCU <a href="'.$url.'">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
-						editMessage($list[$user]["message_id"], $message);
+						editMessage($list[$user]["message_id"], $message, $list[$user]["starttime"]);
 						echo "editMessage: ".$user."\n";
 					} else {
 						echo "oldMessage: ".$user."\n";
@@ -398,7 +398,7 @@ function RFCUHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["starttime"]);
+		deleteMessage($page["message_id"], $page["messagetime"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }

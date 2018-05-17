@@ -16,6 +16,9 @@ function getago($starttime=null) {
 }
 
 function sendMessage($type, $title, $message, $starttime=null){
+	if (is_null($starttime)) {
+		$starttime = date("Y-m-d H:i:s");
+	}
 	global $C, $G, $run;
 	echo "sendMessage: ".$title." / ".$message;
 	$ago = getago($starttime);
