@@ -231,12 +231,12 @@ function AFDBHandler(){
 	}
 }
 
-function VIPHandler(){
+function VIPHandler($vippage, $type, $hashtag){
 	global $C;
-	echo "vip\n";
-	$list = getDBList("vip");
+	echo "$type\n";
+	$list = getDBList($type);
 	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
-		"title" => "Wikipedia:当前的破坏",
+		"title" => $vippage,
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
@@ -258,8 +258,8 @@ function VIPHandler(){
 					continue;
 				}
 				$checkdup []= $user;
-				$url = mediawikiurlencode($C["baseurl"], 'Wikipedia:当前的破坏', '{{vandal|'.$user.'}}');
-				$message = '#VIP <a href="'.$url.'">'.$user.'</a>';
+				$url = mediawikiurlencode($C["baseurl"], $vippage, '{{vandal|'.$user.'}}');
+				$message = '#'.$hashtag.' <a href="'.$url.'">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
 						editMessage($list[$user]["message_id"], $message, $list[$user]["starttime"]);
@@ -269,7 +269,7 @@ function VIPHandler(){
 					}
 					unset($list[$user]);
 				} else {
-					sendMessage("vip", $user, $message);
+					sendMessage($type, $user, $message);
 					echo "sendMessage: ".$user."\n";
 				}
 			}

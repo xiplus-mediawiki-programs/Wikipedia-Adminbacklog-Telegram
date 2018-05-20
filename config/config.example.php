@@ -24,6 +24,7 @@ $C["typelist"] = [
 	"epfull" => ["epfull"],
 	"epnone" => ["epnone"],
 	"epsemi" => ["epsemi"],
+	"ewip" => ["ewip"],
 	"revoke" => ["revoke"],
 	"rfcuham" => ["rfcuham"],
 	"rfcu" => ["rfcu"],
@@ -35,11 +36,11 @@ $C["typelist"] = [
 	"uc" => ["uc"],
 	"unblock" => ["unblock"],
 	"vip" => ["vip"],
-	"sum" => ["afdb", "affp", "csd", "cv", "drv", "epfull", "epnone", "epsemi", "revoke", "rfcuham", "rfpp", "rfr", "rm", "rrd", "uaa", "uc", "unblock", "vip"]
+	"sum" => ["afdb", "affp", "csd", "cv", "drv", "epfull", "epnone", "epsemi", "ewip", "revoke", "rfcuham", "rfpp", "rfr", "rm", "rrd", "uaa", "uc", "unblock", "vip"]
 ];
 $C["ChatDescription"] = "中文維基百科管理員積壓工作直播，共有%sum%項
 #速刪(%csd%) | #RRD(%rrd%) | #侵權(%cv%)
-#VIP(%vip%) | #RFPP(%rfpp%) | #封禁申訴(%unblock%) | #UAA(%uaa%)
+#VIP(%vip%) #EWIP(%ewip%) | #RFPP(%rfpp%) | #封禁申訴(%unblock%) | #UAA(%uaa%)
 #存廢積壓(%afdb%) | #存廢覆核(%drv%) | #除權(%revoke%)
 #編輯請求(%ep%) | #RFR(%rfr%) | #AFFP(%affp%) | #更名(%uc%)
 #移動請求(%rm%) | #RFCU(%rfcu%) | #RFCUHAM(%rfcuham%)";

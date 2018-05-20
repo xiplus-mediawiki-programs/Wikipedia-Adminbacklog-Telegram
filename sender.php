@@ -63,6 +63,7 @@ if (count($run) === 0) {
 	if ($time/60%20 == 8) $run []= "uc";
 	if ($time/60%20 == 9) $run []= "afdb";
 	if ($time/60%20 == 10) $run []= "vip";
+	if ($time/60%20 == 10) $run []= "ewip";
 	if ($time/60%20 == 11) $run []= "uaa";
 	if ($time/60%20 == 12) $run []= "rfpp";
 	if ($time/60%20 == 13) $run []= "rfcuham";
@@ -92,7 +93,8 @@ if (in_array("affp", $run)) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥
 if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
 if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *(.+?) *===\n\*{{status2}}/", 1, 1, 0]);
 if (in_array("afdb", $run)) AFDBHandler();
-if (in_array("vip", $run)) VIPHandler();
+if (in_array("vip", $run)) VIPHandler("Wikipedia:当前的破坏", "vip", "VIP");
+if (in_array("ewip", $run)) VIPHandler("Wikipedia:當前的編輯爭議", "ewip", "EWIP");
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
 if (in_array("rfcuham", $run)) PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|\|OH)/i", 1, 1, 0]);
