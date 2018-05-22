@@ -111,6 +111,8 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 			$fragment = '用户报告';
 		} else if ($type === "rrd") {
 			$fragment = '删除请求';
+		} else if ($type === "affp") {
+			$fragment = $section["page"].'（过滤器日志）';
 		} else {
 			$fragment = "";
 		}
