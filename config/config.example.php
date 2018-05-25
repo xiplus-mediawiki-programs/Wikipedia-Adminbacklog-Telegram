@@ -56,3 +56,9 @@ $C["autodellimit"] = [
 $C["renewlimit"] = [3600*47, 3600*46, 3600*45];
 
 $C['module']['mediawikiurlencode'] = __DIR__.'/function/Mediawiki-urlencode/mediawikiurlencode.php';
+
+stream_context_set_default(
+	array('http' => array(
+		'ignore_errors' => true)
+	)
+);
