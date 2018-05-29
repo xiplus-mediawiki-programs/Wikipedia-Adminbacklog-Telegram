@@ -12,7 +12,6 @@ $C['DBname'] = '';
 $C['DBuser'] = '';
 $C['DBpass'] = '';
 $C['DBTBprefix'] = 'Adminbacklog';
-$G["db"] = new PDO ('mysql:host='.$C["DBhost"].';dbname='.$C["DBname"].';charset=utf8mb4', $C["DBuser"], $C["DBpass"]);
 
 $C["typelist"] = [
 	"afdb" => ["afdb"],
@@ -53,7 +52,7 @@ $C["autodellimit"] = [
 	["unknown", "/.*/", 60*60*24]
 ];
 
-$C["renewlimit"] = [3600*47, 3600*46, 3600*45];
+$C["renewlimit"] = 3600*47;
 
 $C['module']['mediawikiurlencode'] = __DIR__.'/function/Mediawiki-urlencode/mediawikiurlencode.php';
 
@@ -62,3 +61,7 @@ stream_context_set_default(
 		'ignore_errors' => true)
 	)
 );
+
+@include(__DIR__.'/config.php');
+
+$G["db"] = new PDO ('mysql:host='.$C["DBhost"].';dbname='.$C["DBname"].';charset=utf8mb4', $C["DBuser"], $C["DBpass"]);

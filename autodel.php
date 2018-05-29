@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/config/config.php');
+require_once(__DIR__.'/config/config.default.php');
 date_default_timezone_set('UTC');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");

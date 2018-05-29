@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/config/config.php');
+require_once(__DIR__.'/config/config.default.php');
 require_once(__DIR__.'/function/function.php');
 require_once(__DIR__.'/function/database.php');
 require_once(__DIR__.'/function/wikipedia.php');
