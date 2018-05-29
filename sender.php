@@ -88,7 +88,7 @@ if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:
 if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *(.+?) *===\n\*{{status2}}/", 1, 1, 0]);
 if (in_array("afdb", $run)) AFDBHandler();
 if (in_array("vip", $run)) VIPHandler("Wikipedia:当前的破坏", "vip", "VIP");
-if (in_array("ewip", $run)) VIPHandler("Wikipedia:當前的編輯爭議", "ewip", "EWIP");
+if (in_array("ewip", $run)) VIPHandler("Wikipedia:管理员通告板/3RR", "ewip", "EWIP");
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
 if (in_array("rfcuham", $run)) PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|\|OH)/i", 1, 1, 0]);
