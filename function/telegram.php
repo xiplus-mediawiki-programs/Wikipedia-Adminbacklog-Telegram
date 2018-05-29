@@ -44,11 +44,11 @@ function sendMessage($type, $title, $message, $starttime=null){
 	}
 	$message_id = $tg["result"]["message_id"];
 	echo "\t".$message_id;
-	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `messagetime`, `message_id`, `message`) VALUES (:type, :title, :starttime, :messagetime, :message_id, :message)");
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `date`, `message_id`, `message`) VALUES (:type, :title, :starttime, :date, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
 	$sth->bindValue(":starttime", $starttime);
-	$sth->bindValue(":messagetime", date("Y-m-d H:i:s"));
+	$sth->bindValue(":date", time());
 	$sth->bindValue(":message_id", $message_id);
 	$sth->bindValue(":message", $message);
 	$res = $sth->execute();
@@ -100,11 +100,12 @@ function editMessage($message_id, $message, $starttime=null){
 	$run []= "description";
 }
 
-function deleteMessage($message_id, $starttime){
+function deleteMessage($message_id, $date){
 	global $C, $G, $run;
-	if (strtotime($starttime) < time()-86400*2) {
+	if ($date < time()-86400*2) {
 		editMessage($message_id, "#已完成工作 ■■■■■");
 	} else {
+		echo "deleteMessage: ".$message_id;
 		$url = 'https://api.telegram.org/bot'.$C['token'].'/deleteMessage?'.http_build_query(array(
 			"chat_id" => $C["chat_id"],
 			"message_id" => $message_id
@@ -112,7 +113,7 @@ function deleteMessage($message_id, $starttime){
 		$tgs = @file_get_contents($url);
 		if ($tgs === false) {
 			echo "network fail\n";
-			writelog("network fail delete: ".$message_id." / ".$message);
+			writelog("network fail delete: ".$message_id);
 			return;
 		}
 		$tg = json_decode($tgs, true);

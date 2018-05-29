@@ -67,7 +67,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["messagetime"]);
+		deleteMessage($page["message_id"], $page["date"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -143,7 +143,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		}
 	}
 	foreach ($list as $section) {
-		deleteMessage($section["message_id"], $section["messagetime"]);
+		deleteMessage($section["message_id"], $section["date"]);
 		echo "deleteMessage: ".$section["title"]."\n";
 	}
 }
@@ -228,7 +228,7 @@ function AFDBHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["messagetime"]);
+		deleteMessage($page["message_id"], $page["date"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -260,7 +260,7 @@ function VIPHandler($vippage, $type, $hashtag){
 					continue;
 				}
 				$checkdup []= $user;
-				$url = mediawikiurlencode($C["baseurl"], $vippage, '{{vandal|'.$user.'}}');
+				$url = mediawikiurlencode($C["baseurl"], $vippage, $user);
 				$message = '#'.$hashtag.' <a href="'.$url.'">'.$user.'</a>';
 				if (isset($list[$user])) {
 					if ($list[$user]["message"] !== $message) {
@@ -278,7 +278,7 @@ function VIPHandler($vippage, $type, $hashtag){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["messagetime"]);
+		deleteMessage($page["message_id"], $page["date"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -348,7 +348,7 @@ function RFPPHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["messagetime"]);
+		deleteMessage($page["message_id"], $page["date"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }
@@ -400,7 +400,7 @@ function RFCUHandler(){
 		}
 	}
 	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["messagetime"]);
+		deleteMessage($page["message_id"], $page["date"]);
 		echo "deleteMessage: ".$page["title"]."\n";
 	}
 }

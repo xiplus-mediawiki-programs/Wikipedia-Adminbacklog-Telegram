@@ -13,7 +13,7 @@ CREATE TABLE `Adminbacklog` (
   `type` varchar(20) NOT NULL,
   `title` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `starttime` timestamp NULL DEFAULT NULL,
-  `messagetime` timestamp NULL DEFAULT NULL,
+  `date` int(11) NOT NULL,
   `message_id` int(11) NOT NULL,
   `message` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

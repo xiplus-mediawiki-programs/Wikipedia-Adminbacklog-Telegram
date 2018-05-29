@@ -37,7 +37,7 @@ if (isset($options["d"])) {
 if (isset($options["del"])) {
 	$res = getMessageFromDB($options["del"]);
 	if ($res !== false) {
-		deleteMessage($res["message_id"], $res["starttime"]);
+		deleteMessage($res["message_id"], $res["date"]);
 		echo "deleteMessage: ".$res["type"]." ".$res["title"]."\n";
 	} else {
 		echo "deleteMessage: message_id not found\n";
