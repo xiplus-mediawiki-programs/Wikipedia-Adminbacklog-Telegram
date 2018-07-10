@@ -38,7 +38,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			}
 			if (preg_match("/{{d\|bot=Jimmy-bot\|([^|}]+)/", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
-			} else if (preg_match("/{{(?:d|delete|csd|速删)\|(.+?)}}/i", $text, $m)) {
+			} else if (preg_match("/{{(?:d|delete|csd|速删|速刪)\|(.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
