@@ -91,7 +91,7 @@ if (in_array("vip", $run)) VIPHandler("Wikipedia:当前的破坏", "vip", "VIP")
 if (in_array("ewip", $run)) VIPHandler("Wikipedia:管理员通告板/3RR", "ewip", "EWIP");
 if (in_array("uaa", $run)) PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
 if (in_array("rfpp", $run)) RFPPHandler();
-if (in_array("rfcuham", $run)) PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|\|OH)/i", 1, 1, 0]);
+if (in_array("rfcuham", $run)) PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|處理中|\|OH)/i", 1, 1, 0]);
 if (in_array("rfcu", $run)) RFCUHandler();
 if (in_array("revoke", $run)) PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
 if (in_array("rfrpatrol", $run)) PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
