@@ -153,7 +153,7 @@ function AFDBHandler(){
 	echo "afdb\n";
 	$list = getDBList("afdb");
 	$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
-		"title" => "Wikipedia:頁面存廢討論/積壓投票",
+		"title" => "Wikipedia:頁面存廢討論/積壓討論",
 		"action" => "raw"
 	));
 	$text = file_get_contents($url);
