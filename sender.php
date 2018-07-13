@@ -15,13 +15,6 @@ echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 
 $options = getopt("dr:f", ["del:"]);
 
-$lockfile = __DIR__."/executing.lock";
-$lock = @file_get_contents($lockfile);
-if ($lock !== false && strlen($lock) > 0 && !isset($options["f"])) {
-	exit("Another process is running.\n");
-}
-file_put_contents($lockfile, "Yes");
-
 $run = [];
 if (isset($options["r"])) {
 	if (is_array($options["r"])) {
@@ -76,6 +69,15 @@ if (count($run) === 0) {
 	if ($time/60%60 == 9) $run []= "cv";
 }
 
+foreach ($run as $type) {
+	if (checklock($type) && !isset($options["f"])) {
+		$run = array_diff($run, [$type]);
+		echo "skipping ".$type."\n";
+	} else {
+		lock($type);
+	}
+}
+
 echo "run: ".implode(", ", $run)."\n";
 if (in_array("csd", $run)) CategoryMemberHandler("csd", "#速刪", "Category:快速删除候选");
 if (in_array("epfull", $run)) CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
@@ -106,4 +108,6 @@ if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版
 if (in_array("cv", $run)) PageStatusHandler("cv", "#侵權", "Wikipedia:頁面存廢討論/疑似侵權", ["/{{CopyvioEntry\|1=(.+?)\|time=(\d+)/i", 1, 1, 2]);
 if (in_array("description", $run)) setChatDescription();
 
-unlock();
+foreach ($run as $type) {
+	unlock($type);
+}
