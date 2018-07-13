@@ -82,7 +82,7 @@ function editMessage($message_id, $message, $starttime=null){
 		echo "\tedit fail\n";
 		echo $url."\n";
 		var_dump($tg);
-		if (!in_array($tg["description"], ["Bad Request: message is not modified"])) {
+		if (!in_array($tg["description"], ["Bad Request: message is not modified", "Bad Request: message to edit not found"])) {
 			writelog("edit fail: ".$message_id." / ".$message." / ".$tgs);
 			return;
 		}
