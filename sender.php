@@ -38,37 +38,6 @@ if (isset($options["del"])) {
 	$run = ["none"];
 }
 
-if (count($run) === 0) {
-	if ($time/60%1 == 0) $run []= "csd";
-	if ($time/60%20 == 1) $run []= "epfull";
-	if ($time/60%20 == 2) $run []= "epsemi";
-	if ($time/60%20 == 3) $run []= "epnone";
-	if ($time/60%20 == 4) $run []= "rm";
-	if ($time/60%20 == 5) $run []= "unblock";
-	if ($time/60%20 == 6) $run []= "affp";
-	if ($time/60%20 == 7) $run []= "drv";
-	if ($time/60%20 == 8) $run []= "uc";
-	if ($time/60%20 == 9) $run []= "afdb";
-	if ($time/60%20 == 10) $run []= "vip";
-	if ($time/60%20 == 10) $run []= "ewip";
-	if ($time/60%20 == 11) $run []= "uaa";
-	if ($time/60%20 == 12) $run []= "rfpp";
-	if ($time/60%20 == 13) $run []= "rfcuham";
-	if ($time/60%20 == 13) $run []= "rfcu";
-	if ($time/60%20 == 14) $run []= "revoke";
-	if ($time/60%20 == 14) $run []= "revoke";
-	if ($time/60%20 == 15) $run []= "rrd";
-	if ($time/60%60 == 1) $run []= "rfrpatrol";
-	if ($time/60%60 == 2) $run []= "rfrrollback";
-	if ($time/60%60 == 3) $run []= "rfripbe";
-	if ($time/60%60 == 4) $run []= "rfrautoreview";
-	if ($time/60%60 == 5) $run []= "rfrconfirm";
-	if ($time/60%60 == 6) $run []= "rfrmms";
-	if ($time/60%60 == 7) $run []= "rfrawb";
-	if ($time/60%60 == 8) $run []= "rfrflood";
-	if ($time/60%60 == 9) $run []= "cv";
-}
-
 foreach ($run as $type) {
 	if (checklock($type) && !isset($options["f"])) {
 		$run = array_diff($run, [$type]);
