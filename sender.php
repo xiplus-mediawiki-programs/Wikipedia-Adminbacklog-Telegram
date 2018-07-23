@@ -77,6 +77,7 @@ if (in_array("rrd", $run)) PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版
 if (in_array("cv", $run)) PageStatusHandler("cv", "#侵權", "Wikipedia:頁面存廢討論/疑似侵權", ["/{{CopyvioEntry\|1=(.+?)\|time=(\d+)/i", 1, 1, 2]);
 if (in_array("description", $run)) setChatDescription();
 
+$run = array_unique($run);
 foreach ($run as $type) {
 	unlock($type);
 }
