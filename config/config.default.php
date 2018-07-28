@@ -54,6 +54,8 @@ $C["autodellimit"] = [
 
 $C["renewlimit"] = 3600*47;
 
+$C["locklimit"] = 60*5;
+
 $C['module']['mediawikiurlencode'] = __DIR__.'/function/Mediawiki-urlencode/mediawikiurlencode.php';
 
 stream_context_set_default(

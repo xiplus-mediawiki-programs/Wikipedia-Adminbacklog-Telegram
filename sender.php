@@ -22,6 +22,7 @@ if (isset($options["r"])) {
 	} else {
 		$run = [$options["r"]];
 	}
+	writelog("request: ".implode(", ", $run));
 }
 if (isset($options["d"])) {
 	$run []= "description";
@@ -39,9 +40,9 @@ if (isset($options["del"])) {
 }
 
 foreach ($run as $type) {
-	if (checklock($type) && !isset($options["f"])) {
+	if (($lock=checklock($type)) && !isset($options["f"])) {
 		$run = array_diff($run, [$type]);
-		echo "skipping ".$type."\n";
+		echo "skipping ".$type." (".date("Y-m-d H:i:s", $lock).")\n";
 	} else {
 		lock($type);
 	}
