@@ -49,8 +49,12 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			} else if (preg_match("/{{(7D draft|七日草稿)\|/i", $text)) {
 				$message .= " (G1|七日草稿)";
 			}
-			if (preg_match("/{{hang ?on/i", $text, $m)) {
-				$message .= " (#hangon)";
+			if (preg_match("/{{hang ?on(?:\|([^}]+))?}}/i", $text, $m)) {
+				$message .= " (#hangon";
+				if ($m[1]) {
+					$message .= ": ".htmlentities(substr($m[1], 0, 100));
+				}
+				$message .= ")";
 			}
 		}
 		if (isset($list[$page["title"]])) {
