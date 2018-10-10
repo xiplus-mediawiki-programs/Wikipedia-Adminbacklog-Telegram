@@ -56,7 +56,7 @@ if (in_array("epnone", $run)) CategoryMemberHandler("epnone", "#編輯請求 #EN
 if (in_array("rm", $run)) CategoryMemberHandler("rm", "#移動請求", "Category:移動請求", "page");
 if (in_array("unblock", $run)) CategoryMemberHandler("unblock", "#封禁申訴", "Category:封禁及禁制申诉", "page");
 if (in_array("affp", $run)) PageStatusHandler("affp", "#AFFP", "Wikipedia:防滥用过滤器/错误报告", ["/===((?:\[\[(.*?)]])?.+)\n;{{bugstatus\|status=new\|/", 2, 1, 0]);
-if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==.*\[\[:?(.+?)]] ==\n(?:{.+\n)?\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+if (in_array("drv", $run)) PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
 if (in_array("uc", $run)) PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ["/=== *(.+?) *===\n\*{{status2}}/", 1, 1, 0]);
 if (in_array("afdb", $run)) AFDBHandler();
 if (in_array("vip", $run)) VIPHandler("Wikipedia:当前的破坏", "vip", "VIP");
