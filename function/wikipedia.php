@@ -109,14 +109,12 @@ function PageStatusHandler($type, $hashtag, $page, $regex){
 		if ($type === "cv" && $section["status"] > time()) {
 			continue;
 		}
-		if (in_array($type, ["rfcuham", "cv", "uc"])) {
+		if (in_array($type, ["rfcuham", "cv", "uc", "rrd"])) {
 			$fragment = $section["page"];
 		} else if (in_array($type, ["rfrpatrol", "rfrrollback", "rfripbe", "rfrautoreview", "rfrconfirm", "rfrmms", "rfrawb", "rfrflood"])) {
 			$fragment = 'User:'.$section["page"];
 		} else if ($type === "uaa") {
 			$fragment = '用户报告';
-		} else if ($type === "rrd") {
-			$fragment = '删除请求';
 		} else if ($type === "affp") {
 			$fragment = $section["page"].'（过滤器日志）';
 		} else if ($type === "drv") {
