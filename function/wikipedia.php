@@ -23,6 +23,9 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	global $C;
 	echo $type."\n";
 	$list = getDBList($type);
+	if ($type === "csd") {
+		$csdbotlimitcnt = [];
+	}
 	foreach (getCategoryMember($category, $cmtype) as $page) {
 		$url = mediawikiurlencode($C["baseurl"], $page["title"]);
 		$message = $hashtag.' <a href="'.$url.'">'.$page["title"].'</a>';
@@ -36,8 +39,11 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				unlock();
 				exit("network error!\n");
 			}
-			if (preg_match("/{{d\|bot=.*?\|([^|}]+)/", $text, $m)) {
-				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
+			$bot = null;
+			if (preg_match("/{{d\|bot=(.*?)\|([^|}]+)/", $text, $m)) {
+				$message .= " (".htmlentities(substr($m[2], 0, 100)).")";
+				$bot = $m[1];
+				@$csdbotlimitcnt[$bot] ++;
 			} else if (preg_match("/{{(?:d|delete|csd|速删|速刪)\|(.+?)}}/i", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[1], 0, 100)).")";
 			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
@@ -66,8 +72,12 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			}
 			unset($list[$page["title"]]);
 		} else {
-			sendMessage($type, $page["title"], $message);
-			echo "sendMessage: ".$page["title"]."\n";
+			if (!is_null($bot) && $csdbotlimitcnt[$bot] > $C["csdbotlimit"]) {
+				echo "sendMessage: ".$page["title"]." skiped. bot limit.\n";
+			} else {
+				sendMessage($type, $page["title"], $message);
+				echo "sendMessage: ".$page["title"]."\n";
+			}
 		}
 	}
 	foreach ($list as $page) {
