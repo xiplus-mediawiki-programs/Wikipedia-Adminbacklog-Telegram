@@ -51,7 +51,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			}
 			if (preg_match("/{{hang ?on(?:\|([^}]+))?}}/i", $text, $m)) {
 				$message .= " (#hangon";
-				if ($m[1]) {
+				if (isset($m[1])) {
 					$message .= ": ".htmlentities(substr($m[1], 0, 100));
 				}
 				$message .= ")";
