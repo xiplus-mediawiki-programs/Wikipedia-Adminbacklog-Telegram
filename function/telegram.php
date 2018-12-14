@@ -22,27 +22,34 @@ function sendMessage($type, $title, $message, $starttime=null){
 	global $C, $G, $run;
 	echo "sendMessage: ".$title." / ".$message;
 	$ago = getago($starttime);
-	$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
-		"chat_id" => $C["chat_id"],
-		"parse_mode" => "HTML",
-		"disable_web_page_preview" => true,
-		"text" => $message." ".$ago
-	));
-	$tgs = @file_get_contents($url);
-	if ($tgs === false) {
-		echo "network fail\n";
-		writelog("network fail send: ".$title." / ".$message);
-		return;
+	if (in_array($type, $C["hiddentype"])) {
+		$tg = [
+			"ok" => true
+		];
+		$message_id = rand(0, 9999);
+	} else {
+		$url = 'https://api.telegram.org/bot'.$C['token'].'/sendMessage?'.http_build_query(array(
+			"chat_id" => $C["chat_id"],
+			"parse_mode" => "HTML",
+			"disable_web_page_preview" => true,
+			"text" => $message." ".$ago
+		));
+		$tgs = @file_get_contents($url);
+		if ($tgs === false) {
+			echo "network fail\n";
+			writelog("network fail send: ".$title." / ".$message);
+			return;
+		}
+		$tg = json_decode($tgs, true);
+		if (!$tg["ok"]) {
+			echo "\tsend fail\n";
+			echo $url."\n";
+			var_dump($tg);
+			writelog("send fail: ".$message." ".$tgs);
+			return;
+		}
+		$message_id = $tg["result"]["message_id"];
 	}
-	$tg = json_decode($tgs, true);
-	if (!$tg["ok"]) {
-		echo "\tsend fail\n";
-		echo $url."\n";
-		var_dump($tg);
-		writelog("send fail: ".$message." ".$tgs);
-		return;
-	}
-	$message_id = $tg["result"]["message_id"];
 	echo "\t".$message_id;
 	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `date`, `message_id`, `message`) VALUES (:type, :title, :starttime, :date, :message_id, :message)");
 	$sth->bindValue(":type", $type);

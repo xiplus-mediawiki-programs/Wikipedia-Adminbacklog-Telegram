@@ -13,7 +13,14 @@ echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
 $limit = $time-$C["renewlimit"];
 echo "getting before ".$limit." (".date("Y-m-d H:i:s", $limit).")\n";
 
-$sth = $G["db"]->prepare("SELECT *, RAND()*900+`date` AS `rnd` FROM `{$C['DBTBprefix']}` WHERE `date` < :date ORDER BY `rnd` ASC LIMIT 1");
+$hidden = "";
+foreach ($C["hiddentype"] as $type) {
+	$hidden .= sprintf(" AND `type` != '%s'", $type);
+}
+$query = sprintf("SELECT *, RAND()*900+`date` AS `rnd` FROM `{$C['DBTBprefix']}` WHERE `date` < :date %s ORDER BY `rnd` ASC LIMIT 1", $hidden);
+echo $query."\n";
+
+$sth = $G["db"]->prepare($query);
 $sth->bindValue(":date", $limit);
 $sth->execute();
 $res = $sth->fetch(PDO::FETCH_ASSOC);
