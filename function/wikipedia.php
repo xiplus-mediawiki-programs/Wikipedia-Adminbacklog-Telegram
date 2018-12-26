@@ -29,6 +29,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	foreach (getCategoryMember($category, $cmtype) as $page) {
 		$url = mediawikiurlencode($C["baseurl"], $page["title"]);
 		$message = $hashtag.' <a href="'.$url.'">'.$page["title"].'</a>';
+		$bot = null;
 		if ($type === "csd") {
 			$url = 'https://zh.wikipedia.org/w/index.php?'.http_build_query(array(
 				"title" => $page["title"],
@@ -39,7 +40,6 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				unlock();
 				exit("network error!\n");
 			}
-			$bot = null;
 			if (preg_match("/{{d\|bot=(.*?)\|([^|}]+)/", $text, $m)) {
 				$message .= " (".htmlentities(substr($m[2], 0, 100)).")";
 				$bot = $m[1];
