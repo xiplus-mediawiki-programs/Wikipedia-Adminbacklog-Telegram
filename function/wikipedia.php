@@ -73,6 +73,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			unset($list[$page["title"]]);
 		} else {
 			if (!is_null($bot) && $csdbotlimitcnt[$bot] > $C["csdbotlimit"]) {
+				sendMessage($type, $page["title"], $message, null, true);
 				echo "sendMessage: ".$page["title"]." skiped. bot limit.\n";
 			} else {
 				sendMessage($type, $page["title"], $message);
