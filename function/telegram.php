@@ -16,10 +16,14 @@ function getago($starttime=null) {
 }
 
 function sendMessage($type, $title, $message, $starttime=null, $skipsend=false){
+	global $C, $G, $run;
+
+	if (in_array($type, $C["disabletype"])) {
+		return;
+	}
 	if (is_null($starttime)) {
 		$starttime = date("Y-m-d H:i:s");
 	}
-	global $C, $G, $run;
 	echo "sendMessage: ".$title." / ".$message;
 	$ago = getago($starttime);
 	if (in_array($type, $C["hiddentype"]) || $skipsend) {

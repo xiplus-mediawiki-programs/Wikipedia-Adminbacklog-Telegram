@@ -45,6 +45,7 @@ $C["ChatDescription"] = "中文維基百科管理員積壓工作直播，共有%
 #移動請求(%rm%) | #RFCU(%rfcu%) | #RFCUHAM(%rfcuham%)";
 
 $C["hiddentype"] = [];
+$C["disabletype"] = [];
 
 $C["autodellimit"] = [
 	["text", "/.*/", 60*60*24],
