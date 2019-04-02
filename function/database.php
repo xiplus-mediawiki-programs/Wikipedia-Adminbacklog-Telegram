@@ -1,6 +1,6 @@
 <?php
 
-function getDBList($type){
+function getDBList($type) {
 	global $C, $G;
 	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}` WHERE `type` = :type");
 	$sth->bindValue(":type", $type);
@@ -13,14 +13,14 @@ function getDBList($type){
 	return $list;
 }
 
-function writelog($msg=""){
+function writelog($msg = "") {
 	global $C, $G;
 	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}_log` (`msg`) VALUES (:msg)");
 	$sth->bindValue(":msg", $msg);
 	$res = $sth->execute();
 }
 
-function getMessageFromDB($message_id){
+function getMessageFromDB($message_id) {
 	global $C, $G;
 	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
 	$sth->bindValue(":message_id", $message_id);

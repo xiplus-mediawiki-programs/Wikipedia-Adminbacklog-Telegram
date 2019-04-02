@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/config/config.default.php');
-require_once(__DIR__.'/function/database.php');
-require_once(__DIR__.'/function/telegram.php');
+require_once __DIR__ . '/config/config.default.php';
+require_once __DIR__ . '/function/database.php';
+require_once __DIR__ . '/function/telegram.php';
 date_default_timezone_set('UTC');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
@@ -9,12 +9,12 @@ if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 
 stream_context_set_default(
 	array('http' => array(
-		'ignore_errors' => true)
+		'ignore_errors' => true),
 	)
 );
 
 $time = time();
-echo "The time now is ".date("Y-m-d H:i:s", $time)." (UTC)\n";
+echo "The time now is " . date("Y-m-d H:i:s", $time) . " (UTC)\n";
 
 if (!isset($argv[1])) {
 	exit("please give 1 argument is id\n");
@@ -36,6 +36,6 @@ $sth->bindValue(":endid", $endid);
 $sth->execute();
 $row = $sth->fetchAll(PDO::FETCH_ASSOC);
 foreach ($row as $page) {
-	echo "delete ".$page["message_id"]."\n";
+	echo "delete " . $page["message_id"] . "\n";
 	deleteMessage($page["message_id"], $page["starttime"]);
 }
