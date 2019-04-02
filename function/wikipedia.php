@@ -29,7 +29,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	foreach (getCategoryMember($category, $cmtype) as $page) {
 		$url = mediawikiurlencode($C["baseurl"], $page["title"]);
 		$message = $hashtag . ' <a href="' . $url . '">' . $page["title"] . '</a>';
-		$bot = null;
+		$skipsend = false;
 		if ($type === "csd") {
 			$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
 				"title" => $page["title"],
@@ -44,6 +44,9 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= " (" . htmlentities(substr($m[2], 0, 100)) . ")";
 				$bot = $m[1];
 				@$csdbotlimitcnt[$bot]++;
+				if ($csdbotlimitcnt[$bot] > $C['csdbotlimit']) {
+					$skipsend = true;
+				}
 			} else if (preg_match("/{{(?:d|delete|csd|速删|速刪)\|(.+?)}}/i", $text, $m)) {
 				$message .= " (" . htmlentities(substr($m[1], 0, 100)) . ")";
 			} else if (preg_match("/{{(db-.+?)}}/i", $text, $m)) {
@@ -63,6 +66,12 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= ")";
 			}
 		}
+		if ($type === 'epfull') {
+			if ($C['EPFULL']['ignore_pattern'] && preg_match($C['EPFULL']['ignore_pattern'], $page['title'])) {
+				$skipsend = true;
+			}
+		}
+
 		if (isset($list[$page["title"]])) {
 			if ($list[$page["title"]]["message"] !== $message) {
 				editMessage($list[$page["title"]]["message_id"], $message, $list[$page["title"]]["starttime"]);
@@ -72,9 +81,9 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 			}
 			unset($list[$page["title"]]);
 		} else {
-			if (!is_null($bot) && $csdbotlimitcnt[$bot] > $C["csdbotlimit"]) {
+			if ($skipsend) {
 				sendMessage($type, $page["title"], $message, null, true);
-				echo "sendMessage: " . $page["title"] . " skiped. bot limit.\n";
+				echo "sendMessage: " . $page["title"] . " skiped.\n";
 			} else {
 				sendMessage($type, $page["title"], $message);
 				echo "sendMessage: " . $page["title"] . "\n";
