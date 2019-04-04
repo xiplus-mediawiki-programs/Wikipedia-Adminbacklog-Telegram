@@ -66,10 +66,9 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= ")";
 			}
 		}
-		if ($type === 'epfull') {
-			if ($C['EPFULL']['ignore_pattern'] && preg_match($C['EPFULL']['ignore_pattern'], $page['title'])) {
-				$skipsend = true;
-			}
+		if ($type === 'epfull' && $C['EPFULL']['ignore_pattern'] && preg_match($C['EPFULL']['ignore_pattern'], $page['title'])) {
+			echo "blacklist: " . $page['title'] . "\n";
+			continue;
 		}
 
 		if (isset($list[$page["title"]])) {
