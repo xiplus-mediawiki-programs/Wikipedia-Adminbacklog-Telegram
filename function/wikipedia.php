@@ -303,7 +303,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex) {
 		if ($type === "cv" && $section["status"] > time()) {
 			continue;
 		}
-		if (in_array($type, ["rfcuham", "cv", "uc", "rrd"])) {
+		if (in_array($type, ["rfcuham", "cv", "uc"])) {
 			$fragment = $section["page"];
 		} else if (in_array($type, ["rfrpatrol", "rfrrollback", "rfripbe", "rfrautoreview", "rfrconfirm", "rfrmms", "rfrawb", "rfrflood"])) {
 			$fragment = 'User:' . $section["page"];
@@ -333,9 +333,6 @@ function PageStatusHandler($type, $hashtag, $page, $regex) {
 		$message = $hashtag . ' <a href="' . $url . '">' . $section["page"] . '</a>';
 		if ($type === "drv") {
 			$message .= " (#" . $section["status"] . ")";
-		}
-		if ($type === "rrd" && strtolower($section["status"]) === "oh") {
-			$message .= " (#OH)";
 		}
 		if (in_array($section["title"], $checkdup)) {
 			echo $section["title"] . " dup\n";
