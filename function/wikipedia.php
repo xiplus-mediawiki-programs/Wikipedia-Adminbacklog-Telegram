@@ -84,6 +84,54 @@ class WikipediaAdminbacklogBasepage {
 	}
 }
 
+class RRDHandler extends WikipediaAdminbacklogBasepage {
+	private $hashtag = '#RRD';
+	private $page = 'Wikipedia:修订版本删除请求';
+	private $splitregex = [
+		['/({{Revdel)/', '%s$1'],
+	];
+	private $statusregex = '/\|status\s*=\s*(|OH|新申請.*?|)\n/';
+	private $titleregex = '/\|article = (.+?) *\n/';
+	private $requesterregex = '/{{Revdel[\s\S]*?}}\n.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
+
+	public function __construct() {
+		parent::__construct('rrd');
+	}
+
+	public function run() {
+		global $C;
+
+		$text = $this->get_page_text($this->page);
+		$text = $this->split_text($text, $this->splitregex, [0]);
+		$checkdup = [];
+		foreach ($text as $section) {
+			$status = $this->match_text($section, $this->statusregex);
+			if (is_null($status)) {
+				continue;
+			}
+
+			$requester = $this->match_text($section, $this->requesterregex);
+
+			if (in_array($requester, $C['BadRequester'])) {
+				continue;
+			}
+
+			$title = $this->match_text($section, $this->titleregex);
+			echo $title . "\n";
+			echo $requester . "\n";
+
+			$url = mediawikiurlencode($C["baseurl"], $this->page, $title);
+			$message = $this->hashtag . ' <a href="' . $url . '">' . $title . '</a>';
+			if (strtolower($status) === "oh") {
+				$message .= " (#OH)";
+			}
+
+			$this->send_message($title, $message);
+		}
+		$this->delete_message();
+	}
+}
+
 function getCategoryMember($category, $cmtype) {
 	global $C, $G;
 	$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(

@@ -150,7 +150,7 @@ if (in_array("rfrflood", $run)) {
 }
 
 if (in_array("rrd", $run)) {
-	PageStatusHandler("rrd", "#RRD", "Wikipedia:修订版本删除请求", ["/{{Revdel\n\|status = (OH|新申請.*?|)\n\|article = (.+?) *\n/i", 2, 2, 1]);
+	(new RRDHandler())->run();
 }
 
 if (in_array("cv", $run)) {
