@@ -132,6 +132,49 @@ class RRDHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
+class VIPHandler extends WikipediaAdminbacklogBasepage {
+	private $hashtag = '#VIP';
+	private $page = 'Wikipedia:当前的破坏';
+	private $splitregex = [
+		['/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m', '%s$1'],
+	];
+	private $statusregex = '/^\* 处理：(<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->|)$/m';
+	private $titleregex = '/{{(?:vandal|IPvandal)\|(?:1=)?(.+?)}}/';
+	private $requesterregex = '/发现人：.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
+
+	public function __construct() {
+		parent::__construct('vip');
+	}
+
+	public function run() {
+		global $C;
+
+		$text = $this->get_page_text($this->page);
+		$text = $this->split_text($text, $this->splitregex, [0]);
+		$checkdup = [];
+		foreach ($text as $section) {
+			$status = $this->match_text($section, $this->statusregex);
+			if (is_null($status)) {
+				continue;
+			}
+
+			$requester = $this->match_text($section, $this->requesterregex);
+
+			if (in_array($requester, $C['BadRequester'])) {
+				continue;
+			}
+
+			$user = $this->match_text($section, $this->titleregex);
+
+			$url = mediawikiurlencode($C["baseurl"], $this->page, $user);
+			$message = $this->hashtag . ' <a href="' . $url . '">' . $user . '</a>';
+
+			$this->send_message($user, $message);
+		}
+		$this->delete_message();
+	}
+}
+
 function getCategoryMember($category, $cmtype) {
 	global $C, $G;
 	$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(
@@ -393,56 +436,6 @@ function AFDBHandler() {
 						sendMessage("afdb", $page2, $message);
 						echo "sendMessage: " . $page2 . "\n";
 					}
-				}
-			}
-		}
-	}
-	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["date"]);
-		echo "deleteMessage: " . $page["title"] . "\n";
-	}
-}
-
-function VIPHandler($vippage, $type, $hashtag) {
-	global $C;
-	echo "$type\n";
-	$list = getDBList($type);
-	$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
-		"title" => $vippage,
-		"action" => "raw",
-	));
-	$text = file_get_contents($url);
-	if ($text === false) {
-		unlock();
-		exit("network error!\n");
-	}
-	$hash = md5(time());
-	$text = preg_replace("/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m", $hash . "$1", $text);
-	$text = explode($hash, $text);
-	unset($text[0]);
-	$checkdup = array();
-	foreach ($text as $temp) {
-		if (preg_match("/{{(?:vandal|IPvandal)\|(?:1=)?(.+?)}}/", $temp, $m)) {
-			$user = $m[1];
-			if (preg_match("/^\* 处理：$/m", $temp) || preg_match("/^\* 处理：<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->$/m", $temp)) {
-				if (in_array($user, $checkdup)) {
-					echo $user . " dup\n";
-					continue;
-				}
-				$checkdup[] = $user;
-				$url = mediawikiurlencode($C["baseurl"], $vippage, $user);
-				$message = '#' . $hashtag . ' <a href="' . $url . '">' . $user . '</a>';
-				if (isset($list[$user])) {
-					if ($list[$user]["message"] !== $message) {
-						editMessage($list[$user]["message_id"], $message, $list[$user]["starttime"]);
-						echo "editMessage: " . $user . "\n";
-					} else {
-						echo "oldMessage: " . $user . "\n";
-					}
-					unset($list[$user]);
-				} else {
-					sendMessage($type, $user, $message);
-					echo "sendMessage: " . $user . "\n";
 				}
 			}
 		}

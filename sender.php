@@ -90,7 +90,7 @@ if (in_array("afdb", $run)) {
 }
 
 if (in_array("vip", $run)) {
-	VIPHandler("Wikipedia:当前的破坏", "vip", "VIP");
+	(new VIPHandler())->run();
 }
 
 if (in_array("ewip", $run)) {
