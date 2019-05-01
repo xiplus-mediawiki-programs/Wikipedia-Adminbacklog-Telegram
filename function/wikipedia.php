@@ -1,5 +1,89 @@
 <?php
 
+class WikipediaAdminbacklogBasepage {
+	public function __construct($type) {
+		$this->type = $type;
+		$this->list = getDBList($type);
+		$this->checkdup = [];
+	}
+
+	protected function send_message($title, $message) {
+		if (in_array($title, $this->checkdup)) {
+			return;
+		}
+		$checkdup[] = $title;
+		if (isset($list[$title])) {
+			if ($list[$title]['message'] !== $message) {
+				editMessage($list[$title]['message_id'], $message, $list[$title]['starttime']);
+				echo "editMessage: " . $title . "\n";
+			} else {
+				echo "oldMessage: " . $title . "\n";
+			}
+			unset($this->list[$title]);
+		} else {
+			sendMessage($this->type, $title, $message);
+			echo "sendMessage: " . $title . "\n";
+		}
+	}
+
+	protected function delete_message() {
+		foreach ($this->list as $section) {
+			deleteMessage($section['message_id'], $section['date']);
+			echo "deleteMessage:" . $section['title'] . "\n";
+		}
+	}
+
+	protected function get_page_text($page) {
+		$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
+			'title' => $page,
+			'action' => 'raw',
+		));
+		$text = file_get_contents($url);
+		if ($text === false) {
+			unlock();
+			exit('network error!\n');
+		}
+		return $text;
+	}
+
+	protected function get_category_member($category, $cmtype) {
+		$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(
+			'action' => 'query',
+			'format' => 'json',
+			'list' => 'categorymembers',
+			'cmtype' => $cmtype,
+			'cmtitle' => $category,
+			'cmlimit' => 'max',
+		));
+		$list = file_get_contents($url);
+		if ($list === false) {
+			unlock();
+			exit('network error!\n');
+		}
+		$list = json_decode($list, true);
+		return $list['query']['categorymembers'];
+	}
+
+	protected function split_text($text, $regexs = [], $skipsection = []) {
+		$hash = md5(uniqid(rand(), true));
+		foreach ($regexs as $regex) {
+			$text = preg_replace($regex[0], sprintf($regex[1], $hash), $text);
+		}
+		$text = explode($hash, $text);
+		foreach ($skipsection as $section) {
+			unset($text[$section]);
+		}
+		return $text;
+	}
+
+	protected function match_text($text, $regex) {
+		if (preg_match($regex, $text, $m)) {
+			return $m[1];
+		}
+		return null;
+	}
+}
+
 function getCategoryMember($category, $cmtype) {
 	global $C, $G;
 	$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(

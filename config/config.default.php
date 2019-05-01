@@ -68,6 +68,8 @@ $C['RFPP']['blacklist_pattern'] = "";
 
 $C['EPFULL']['ignore_pattern'] = "";
 
+$C['BadRequester'] = [];
+
 stream_context_set_default(
 	array('http' => array(
 		'ignore_errors' => true),
