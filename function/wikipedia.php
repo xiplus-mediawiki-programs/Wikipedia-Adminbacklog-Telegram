@@ -12,9 +12,9 @@ class WikipediaAdminbacklogBasepage {
 			return;
 		}
 		$checkdup[] = $title;
-		if (isset($list[$title])) {
-			if ($list[$title]['message'] !== $message) {
-				editMessage($list[$title]['message_id'], $message, $list[$title]['starttime']);
+		if (isset($this->list[$title])) {
+			if ($this->list[$title]['message'] !== $message) {
+				editMessage($this->list[$title]['message_id'], $message, $this->list[$title]['starttime']);
 				echo "editMessage: " . $title . "\n";
 			} else {
 				echo "oldMessage: " . $title . "\n";
