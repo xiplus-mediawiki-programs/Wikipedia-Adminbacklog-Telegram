@@ -102,7 +102,7 @@ if (in_array("uaa", $run)) {
 }
 
 if (in_array("rfpp", $run)) {
-	RFPPHandler();
+	(new RFPPHandler())->run();
 }
 
 if (in_array("rfcuham", $run)) {

@@ -132,6 +132,62 @@ class RRDHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
+class RFPPHandler extends WikipediaAdminbacklogBasepage {
+	private $hashtag = '#RFPP';
+	private $page = 'Wikipedia:请求保护页面';
+	private $splitregex = [
+		['/^(===)/m', '%s$1'],
+	];
+	private $unprotecttext = '== 请求解除保护 ==';
+	private $statusregex = '/({{RFPP\||{{(撤回|Withdrawn)}}|{{y\||拒絕|拒绝|錯誤報告|(永久|臨時|临时)?(半|全|白紙)?(保護|保护)了?(\d+|[一二兩三四五六七八九十]+)(日|周|週|個月|个月)|(已被|已經|永久)(半|全|白紙|解除)?(保護|保护)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注|再提交|陳舊報告|陈旧报告|毋須保護|(保护|保護).*解除)/i';
+	private $titleregex = '/===\s*(?:\[\[)?:?(.+?)(?:]])?\s*===/';
+	private $requesterregex = '/===[\s\S]*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/i';
+
+	public function __construct() {
+		parent::__construct('rfpp');
+	}
+
+	public function run() {
+		global $C;
+
+		$text = $this->get_page_text($this->page);
+		$text = explode($this->unprotecttext, $text);
+		if (count($text) !== 2) {
+			echo "split rfpp fail\n";
+			return;
+		}
+		$alltext = [
+			'protect' => $this->split_text($text[0], $this->splitregex, [0]),
+			'unprotect' => $this->split_text($text[1], $this->splitregex, [0]),
+		];
+		$checkdup = [];
+		foreach ($alltext as $reqtype => $text) {
+			foreach ($text as $section) {
+				$status = $this->match_text(preg_replace('/===.+?=== *\n.+\n/', '', $section), $this->statusregex);
+				if (!is_null($status)) {
+					continue;
+				}
+
+				$requester = $this->match_text($section, $this->requesterregex);
+				$title = $this->match_text($section, $this->titleregex);
+				echo "$title $requester\n";
+
+				if (in_array($requester, $C['BadRequester'])) {
+					continue;
+				}
+
+				$url = mediawikiurlencode($C["baseurl"], $this->page, $title);
+				$message = $this->hashtag . ' <a href="' . $url . '">' . $title . '</a>';
+				if ($reqtype === 'unprotect') {
+					$message .= " #解除";
+				}
+				$this->send_message($title, $message);
+			}
+		}
+		$this->delete_message();
+	}
+}
+
 class VIPHandler extends WikipediaAdminbacklogBasepage {
 	private $hashtag = '#VIP';
 	private $page = 'Wikipedia:当前的破坏';
@@ -433,80 +489,6 @@ function AFDBHandler() {
 						sendMessage("afdb", $page2, $message);
 						echo "sendMessage: " . $page2 . "\n";
 					}
-				}
-			}
-		}
-	}
-	foreach ($list as $page) {
-		deleteMessage($page["message_id"], $page["date"]);
-		echo "deleteMessage: " . $page["title"] . "\n";
-	}
-}
-
-function RFPPHandler() {
-	global $C;
-	$type = "rfpp";
-	echo $type . "\n";
-	$list = getDBList($type);
-	$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
-		"title" => "Wikipedia:请求保护页面",
-		"action" => "raw",
-	));
-	$text = file_get_contents($url);
-	if ($text === false) {
-		unlock();
-		exit("network error!\n");
-	}
-	$hash = md5(time());
-	$text = preg_replace("/^(===)/m", $hash . "$1", $text);
-	$text = explode("== 请求解除保护 ==", $text);
-	if (count($text) !== 2) {
-		echo "split rfpp fail\n";
-		return;
-	}
-	$text[0] = explode($hash, $text[0]);
-	$text[1] = explode($hash, $text[1]);
-	unset($text[0][0]);
-	unset($text[1][0]);
-	echo count($text[0]) . "\n";
-	echo count($text[1]) . "\n";
-	$checkdup = array();
-	foreach ($text as $key => $section) {
-		foreach ($section as $temp) {
-			if (preg_match("/===(.+?)===/", $temp, $m)) {
-				$page = $m[1];
-				$page = trim($page);
-				$page = preg_replace("/\[\[:?(.+?)?]]/", "$1", $page);
-				if ($C['RFPP']['blacklist_pattern'] && preg_match($C['RFPP']['blacklist_pattern'], $temp)) {
-					echo "blacklist: " . $page . "\n";
-					continue;
-				}
-				$temp = preg_replace("/===.+?=== *\n.+\n/", "", $temp);
-				if (!preg_match($C['RFPP']['done_pattern'], $temp)) {
-					if (in_array($page, $checkdup)) {
-						echo $page . " dup\n";
-						continue;
-					}
-					$checkdup[] = $page;
-					$url = mediawikiurlencode($C["baseurl"], 'Wikipedia:请求保护页面', $page);
-					$message = '#RFPP <a href="' . $url . '">' . $page . '</a>';
-					if ($key === 1) {
-						$message .= " #解除";
-					}
-					if (isset($list[$page])) {
-						if ($list[$page]["message"] !== $message) {
-							editMessage($list[$page]["message_id"], $message, $list[$page]["starttime"]);
-							echo "editMessage: " . $page . "\n";
-						} else {
-							echo "oldMessage: " . $page . "\n";
-						}
-						unset($list[$page]);
-					} else {
-						sendMessage($type, $page, $message);
-						echo "sendMessage: " . $page . "\n";
-					}
-				} else {
-					echo "done: " . $page . "\n";
 				}
 			}
 		}
