@@ -37,5 +37,5 @@ $sth->execute();
 $row = $sth->fetchAll(PDO::FETCH_ASSOC);
 foreach ($row as $page) {
 	echo "delete " . $page["message_id"] . "\n";
-	deleteMessage($page["message_id"], $page["starttime"]);
+	deleteMessage($page["message_id"], $page["date"]);
 }
