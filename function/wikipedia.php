@@ -11,7 +11,7 @@ class WikipediaAdminbacklogBasepage {
 		if (in_array($title, $this->checkdup)) {
 			return;
 		}
-		$checkdup[] = $title;
+		$this->checkdup[] = $title;
 		if (isset($this->list[$title])) {
 			if ($this->list[$title]['message'] !== $message) {
 				editMessage($this->list[$title]['message_id'], $message, $this->list[$title]['starttime']);
