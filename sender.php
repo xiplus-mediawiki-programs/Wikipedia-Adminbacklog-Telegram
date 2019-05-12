@@ -94,7 +94,7 @@ if (in_array("vip", $run)) {
 }
 
 if (in_array("ewip", $run)) {
-	VIPHandler("Wikipedia:管理员通告板/3RR", "ewip", "EWIP");
+	(new EWIPHandler())->run();
 }
 
 if (in_array("uaa", $run)) {

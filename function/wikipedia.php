@@ -188,9 +188,7 @@ class RFPPHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
-class VIPHandler extends WikipediaAdminbacklogBasepage {
-	private $hashtag = '#VIP';
-	private $page = 'Wikipedia:当前的破坏';
+class VIPBaseHandler extends WikipediaAdminbacklogBasepage {
 	private $splitregex = [
 		['/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m', '%s$1'],
 	];
@@ -198,8 +196,10 @@ class VIPHandler extends WikipediaAdminbacklogBasepage {
 	private $titleregex = '/{{(?:vandal|IPvandal)\|(?:1=)?(.+?)}}/';
 	private $requesterregex = '/发现人：.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
-	public function __construct() {
-		parent::__construct('vip');
+	public function __construct($type, $hashtag, $page) {
+		parent::__construct($type);
+		$this->hashtag = $hashtag;
+		$this->page = $page;
 	}
 
 	public function run() {
@@ -228,6 +228,18 @@ class VIPHandler extends WikipediaAdminbacklogBasepage {
 			$this->send_message($user, $message);
 		}
 		$this->delete_message();
+	}
+}
+
+class VIPHandler extends VIPBaseHandler {
+	public function __construct() {
+		parent::__construct('vip', '#VIP', 'Wikipedia:当前的破坏');
+	}
+}
+
+class EWIPHandler extends VIPBaseHandler {
+	public function __construct() {
+		parent::__construct('ewip', '#EWIP', 'Wikipedia:管理员通告板/3RR');
 	}
 }
 
