@@ -270,7 +270,11 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		$csdbotlimitcnt = [];
 	}
 	foreach (getCategoryMember($category, $cmtype) as $page) {
-		$url = mediawikiurlencode($C["baseurl"], $page["title"]);
+		$section = '';
+		if (in_array($type, ['epfull', 'epsemi', 'epnonoe'])) {
+			$section = 'footer';
+		}
+		$url = mediawikiurlencode($C["baseurl"], $page["title"], $section);
 		$message = $hashtag . ' <a href="' . $url . '">' . $page["title"] . '</a>';
 		$skipsend = false;
 		if ($type === "csd") {
