@@ -56,6 +56,7 @@ $C["autodellimit"] = [
 ];
 
 $C["renewlimit"] = 3600 * 47;
+$C["logkeep"] = 86400 * 30;
 
 $C["locklimit"] = 60 * 5;
 
