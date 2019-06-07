@@ -98,7 +98,7 @@ if (in_array("ewip", $run)) {
 }
 
 if (in_array("uaa", $run)) {
-	PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?(.+?)}}/", 1, 1, 0]);
+	PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?([^|]+?)(?:\|.+)?}}/", 1, 1, 0]);
 }
 
 if (in_array("rfpp", $run)) {
