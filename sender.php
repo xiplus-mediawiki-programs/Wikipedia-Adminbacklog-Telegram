@@ -78,7 +78,7 @@ if (in_array("affp", $run)) {
 }
 
 if (in_array("drv", $run)) {
-	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{Status2\|(新申請|OH)/", 1, 1, 2]);
+	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{Status2\|(新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/", 1, 1, 2]);
 }
 
 if (in_array("uc", $run)) {
@@ -106,7 +106,7 @@ if (in_array("rfpp", $run)) {
 }
 
 if (in_array("rfcuham", $run)) {
-	PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|處理中|\|OH)/i", 1, 1, 0]);
+	PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|處理中|\on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/i", 1, 1, 0]);
 }
 
 if (in_array("rfcu", $run)) {
@@ -118,35 +118,35 @@ if (in_array("revoke", $run)) {
 }
 
 if (in_array("rfrpatrol", $run)) {
-	PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrpatrol", "#RFR", "Wikipedia:權限申請/申請巡查權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrrollback", $run)) {
-	PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrrollback", "#RFR", "Wikipedia:權限申請/申請回退權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfripbe", $run)) {
-	PageStatusHandler("rfripbe", "#RFR", "Wikipedia:權限申請/申請IP封禁例外權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfripbe", "#RFR", "Wikipedia:權限申請/申請IP封禁例外權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrautoreview", $run)) {
-	PageStatusHandler("rfrautoreview", "#RFR", "Wikipedia:權限申請/申請巡查豁免權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrautoreview", "#RFR", "Wikipedia:權限申請/申請巡查豁免權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrconfirm", $run)) {
-	PageStatusHandler("rfrconfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrconfirm", "#RFR", "Wikipedia:權限申請/申請確認用戶權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrmms", $run)) {
-	PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrawb", $run)) {
-	PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrflood", $run)) {
-	PageStatusHandler("rfrflood", "#RFR", "Wikipedia:机器用户/申请", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|OH)}}/", 1, 1, 0]);
+	PageStatusHandler("rfrflood", "#RFR", "Wikipedia:机器用户/申请", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
 if (in_array("rrd", $run)) {
