@@ -141,7 +141,7 @@ class RFPPHandler extends WikipediaAdminbacklogBasepage {
 	private $unprotecttext = '== 请求解除保护 ==';
 	private $statusregex = '/({{RFPP\||{{(撤回|Withdrawn)}}|{{y\||拒絕|拒绝|錯誤報告|(永久|臨時|临时)?(半|全|白紙)?(保護|保护)了?(\d+|[一二兩三四五六七八九十]+)(日|周|週|個月|个月)|(已被|已經|永久)(半|全|白紙|解除)?(保護|保护)|不是(编辑战|編輯戰)|完成|Done|沒有.*使.*該頁.*被保護|没有.*使.*该页.*被保护|會關注|会关注|再提交|陳舊報告|陈旧报告|毋須保護|(保护|保護).*解除)/i';
 	private $titleregex = '/===\s*(?:\[\[)?:?(.+?)(?:]])?\s*===/';
-	private $requesterregex = '/===[\s\S]*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/i';
+	private $requesterregex = '/===.+===\s*\n.+\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/i';
 
 	public function __construct() {
 		parent::__construct('rfpp');
