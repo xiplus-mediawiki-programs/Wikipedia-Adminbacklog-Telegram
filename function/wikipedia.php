@@ -278,6 +278,10 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 		$message = $hashtag . ' <a href="' . $url . '">' . $page["title"] . '</a>';
 		$skipsend = false;
 		if ($type === "csd") {
+			if (preg_match('/^User talk:(.+?)\/存档$/', $page['title'])) {
+				echo "Skip {$page['title']}\n";
+				continue;
+			}
 			$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
 				"title" => $page["title"],
 				"action" => "raw",
