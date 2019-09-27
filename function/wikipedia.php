@@ -388,7 +388,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex) {
 		} else if ($type === "uaa") {
 			$fragment = '用户报告';
 		} else if ($type === "affp") {
-			$fragment = $section["page"] . '（过滤器日志）';
+			$fragment = ($section['page'] === '無標題' ? '' : $section['page']) . '（过滤器日志）';
 		} else if ($type === "drv") {
 			if (preg_match("/^\[\[:?([^\]]+?)]]$/", $section["page"], $m)) {
 				$fragment = $m[1];
