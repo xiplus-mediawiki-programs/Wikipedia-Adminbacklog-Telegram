@@ -91,7 +91,7 @@ class RRDHandler extends WikipediaAdminbacklogBasepage {
 		['/({{Revdel)/', '%s$1'],
 	];
 	private $statusregex = '/\|status\s*=\s*(|OH|新申請.*?|<!--不要修改本参数-->)\n/';
-	private $titleregex = '/\|article = (.+?) *\n/';
+	private $titleregex = '/\|article = *(.+?) *\n/';
 	private $requesterregex = '/{{Revdel[\s\S]*?}}\n.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
 	public function __construct() {
