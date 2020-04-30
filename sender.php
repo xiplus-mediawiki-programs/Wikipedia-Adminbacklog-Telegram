@@ -141,6 +141,10 @@ if (in_array("rfrmms", $run)) {
 	PageStatusHandler("rfrmms", "#RFR", "Wikipedia:權限申請/申請大量訊息發送權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }
 
+if (in_array("rfrtranswiki", $run)) {
+	PageStatusHandler("rfrtranswiki", "#RFR", "Wikipedia:權限申請/申請跨維基導入權", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
+}
+
 if (in_array("rfrawb", $run)) {
 	PageStatusHandler("rfrawb", "#RFR", "Wikipedia_talk:AutoWikiBrowser/CheckPage", ["/====\[\[User:(.+?)]]====\n:{{rfp\/status\|(?:新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)}}/", 1, 1, 0]);
 }

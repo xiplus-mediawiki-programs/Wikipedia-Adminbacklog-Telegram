@@ -386,7 +386,7 @@ function PageStatusHandler($type, $hashtag, $page, $regex) {
 		}
 		if (in_array($type, ["rfcuham", "cv", "uc"])) {
 			$fragment = $section["page"];
-		} else if (in_array($type, ["rfrpatrol", "rfrrollback", "rfripbe", "rfrautoreview", "rfrconfirm", "rfrmms", "rfrawb", "rfrflood"])) {
+		} else if (in_array($type, ["rfrpatrol", "rfrrollback", "rfripbe", "rfrautoreview", "rfrconfirm", "rfrmms", "rfrtranswiki", "rfrawb", "rfrflood"])) {
 			$fragment = 'User:' . $section["page"];
 		} else if ($type === "uaa") {
 			$fragment = '用户报告';
