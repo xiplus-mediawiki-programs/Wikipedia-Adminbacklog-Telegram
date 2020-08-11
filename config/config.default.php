@@ -19,10 +19,11 @@ $C["typelist"] = [
 	"csd" => ["csd"],
 	"cv" => ["cv"],
 	"drv" => ["drv"],
-	"ep" => ["epfull", "epsemi", "epnone"],
+	"ep" => ["epfull", "eptemp", "epsemi", "epnone"],
 	"epfull" => ["epfull"],
-	"epnone" => ["epnone"],
+	"eptemp" => ["eptemp"],
 	"epsemi" => ["epsemi"],
+	"epnone" => ["epnone"],
 	"ewip" => ["ewip"],
 	"revoke" => ["revoke"],
 	"rfcuham" => ["rfcuham"],
@@ -35,7 +36,7 @@ $C["typelist"] = [
 	"uc" => ["uc"],
 	"unblock" => ["unblock"],
 	"vip" => ["vip"],
-	"sum" => ["afdb", "affp", "csd", "cv", "drv", "epfull", "epnone", "epsemi", "ewip", "revoke", "rfcuham", "rfpp", "rfr", "rm", "rrd", "uaa", "uc", "unblock", "vip"],
+	"sum" => ["afdb", "affp", "csd", "cv", "drv", "epfull", "eptemp", "epsemi", "epnone", "ewip", "revoke", "rfcuham", "rfpp", "rfr", "rm", "rrd", "uaa", "uc", "unblock", "vip"],
 ];
 $C["ChatDescription"] = "中文維基百科管理員積壓工作直播，共有%sum%項
 #速刪(%csd%) | #RRD(%rrd%) | #侵權(%cv%)

@@ -57,6 +57,10 @@ if (in_array("epfull", $run)) {
 	CategoryMemberHandler("epfull", "#編輯請求 #EFP", "Category:維基百科編輯全保護頁面請求");
 }
 
+if (in_array("eptemp", $run)) {
+	CategoryMemberHandler("eptemp", "#編輯請求 #ETP", "Category:維基百科編輯模板保護頁面請求");
+}
+
 if (in_array("epsemi", $run)) {
 	CategoryMemberHandler("epsemi", "#編輯請求 #ESP", "Category:維基百科編輯半保護頁面請求");
 }
