@@ -82,11 +82,11 @@ if (in_array("affp", $run)) {
 }
 
 if (in_array("drv", $run)) {
-	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{Status2\|(新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/", 1, 1, 2]);
+	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{status\|(新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/", 1, 1, 2]);
 }
 
 if (in_array("uc", $run)) {
-	PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ['/=== *<span id="(.+?)">.*===\n\*{{status2}}/', 1, 1, 0]);
+	PageStatusHandler("uc", "#更名", "Wikipedia:更改用户名", ['/=== *<span id="(.+?)">.*===\n\*{{status}}/', 1, 1, 0]);
 }
 
 if (in_array("afdb", $run)) {
@@ -110,7 +110,7 @@ if (in_array("rfpp", $run)) {
 }
 
 if (in_array("rfcuham", $run)) {
-	PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status2(}}|處理中|\on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/i", 1, 1, 0]);
+	PageStatusHandler("rfcuham", "#RFCUHAM", "Wikipedia:元維基用戶查核協助請求", ["/=== *(.+?) *===\n{{status(}}|處理中|\on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/i", 1, 1, 0]);
 }
 
 if (in_array("rfcu", $run)) {
@@ -118,7 +118,7 @@ if (in_array("rfcu", $run)) {
 }
 
 if (in_array("revoke", $run)) {
-	PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status2\|新提案}}/", 1, 1, 0]);
+	PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status\|新提案}}/", 1, 1, 0]);
 }
 
 if (in_array("rfrpatrol", $run)) {
