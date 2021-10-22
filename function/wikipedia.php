@@ -1,13 +1,16 @@
 <?php
 
-class WikipediaAdminbacklogBasepage {
-	public function __construct($type) {
+class WikipediaAdminbacklogBasepage
+{
+	public function __construct($type)
+	{
 		$this->type = $type;
 		$this->list = getDBList($type);
 		$this->checkdup = [];
 	}
 
-	protected function send_message($title, $message) {
+	protected function send_message($title, $message)
+	{
 		if (in_array($title, $this->checkdup)) {
 			return;
 		}
@@ -26,14 +29,16 @@ class WikipediaAdminbacklogBasepage {
 		}
 	}
 
-	protected function delete_message() {
+	protected function delete_message()
+	{
 		foreach ($this->list as $section) {
 			deleteMessage($section['message_id'], $section['date']);
 			echo "deleteMessage:" . $section['title'] . "\n";
 		}
 	}
 
-	protected function get_page_text($page) {
+	protected function get_page_text($page)
+	{
 		$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
 			'title' => $page,
 			'action' => 'raw',
@@ -46,7 +51,8 @@ class WikipediaAdminbacklogBasepage {
 		return $text;
 	}
 
-	protected function get_category_member($category, $cmtype) {
+	protected function get_category_member($category, $cmtype)
+	{
 		$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(
 			'action' => 'query',
 			'format' => 'json',
@@ -64,7 +70,8 @@ class WikipediaAdminbacklogBasepage {
 		return $list['query']['categorymembers'];
 	}
 
-	protected function split_text($text, $regexs = [], $skipsection = []) {
+	protected function split_text($text, $regexs = [], $skipsection = [])
+	{
 		$hash = md5(uniqid(rand(), true));
 		foreach ($regexs as $regex) {
 			$text = preg_replace($regex[0], sprintf($regex[1], $hash), $text);
@@ -76,7 +83,8 @@ class WikipediaAdminbacklogBasepage {
 		return $text;
 	}
 
-	protected function match_text($text, $regex) {
+	protected function match_text($text, $regex)
+	{
 		if (preg_match($regex, $text, $m)) {
 			return $m[1];
 		}
@@ -84,7 +92,8 @@ class WikipediaAdminbacklogBasepage {
 	}
 }
 
-class RRDHandler extends WikipediaAdminbacklogBasepage {
+class RRDHandler extends WikipediaAdminbacklogBasepage
+{
 	private $hashtag = '#RRD';
 	private $page = 'Wikipedia:修订版本删除请求';
 	private $splitregex = [
@@ -94,11 +103,13 @@ class RRDHandler extends WikipediaAdminbacklogBasepage {
 	private $titleregex = '/\|article = *(.+?) *\n/';
 	private $requesterregex = '/{{Revdel[\s\S]*?}}\n.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct('rrd');
 	}
 
-	public function run() {
+	public function run()
+	{
 		global $C;
 
 		$text = $this->get_page_text($this->page);
@@ -132,7 +143,8 @@ class RRDHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
-class RFPPHandler extends WikipediaAdminbacklogBasepage {
+class RFPPHandler extends WikipediaAdminbacklogBasepage
+{
 	private $hashtag = '#RFPP';
 	private $page = 'Wikipedia:请求保护页面';
 	private $splitregex = [
@@ -143,11 +155,13 @@ class RFPPHandler extends WikipediaAdminbacklogBasepage {
 	private $titleregex = '/===\s*(?:\[\[)?:?([^\]]+?)(?:]])?\s*===/';
 	private $requesterregex = '/===.+===\s*\n.+\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/i';
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct('rfpp');
 	}
 
-	public function run() {
+	public function run()
+	{
 		global $C;
 
 		$text = $this->get_page_text($this->page);
@@ -191,7 +205,8 @@ class RFPPHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
-class VIPBaseHandler extends WikipediaAdminbacklogBasepage {
+class VIPBaseHandler extends WikipediaAdminbacklogBasepage
+{
 	private $splitregex = [
 		['/^(=== {{(?:vandal|IPvandal)\|.+}} ===)$/m', '%s$1'],
 	];
@@ -199,13 +214,15 @@ class VIPBaseHandler extends WikipediaAdminbacklogBasepage {
 	private $titleregex = '/{{(?:vandal|IPvandal)\|(?:1=)?([^|]+?)(?:\|.+)?}}/';
 	private $requesterregex = '/发现人：.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
-	public function __construct($type, $hashtag, $page) {
+	public function __construct($type, $hashtag, $page)
+	{
 		parent::__construct($type);
 		$this->hashtag = $hashtag;
 		$this->page = $page;
 	}
 
-	public function run() {
+	public function run()
+	{
 		global $C;
 
 		$text = $this->get_page_text($this->page);
@@ -234,19 +251,24 @@ class VIPBaseHandler extends WikipediaAdminbacklogBasepage {
 	}
 }
 
-class VIPHandler extends VIPBaseHandler {
-	public function __construct() {
+class VIPHandler extends VIPBaseHandler
+{
+	public function __construct()
+	{
 		parent::__construct('vip', '#VIP', 'Wikipedia:当前的破坏');
 	}
 }
 
-class EWIPHandler extends VIPBaseHandler {
-	public function __construct() {
+class EWIPHandler extends VIPBaseHandler
+{
+	public function __construct()
+	{
 		parent::__construct('ewip', '#EWIP', 'Wikipedia:管理员通告板/3RR');
 	}
 }
 
-function getCategoryMember($category, $cmtype) {
+function getCategoryMember($category, $cmtype)
+{
 	global $C, $G;
 	$url = 'https://zh.wikipedia.org/w/api.php?' . http_build_query(array(
 		"action" => "query",
@@ -265,7 +287,8 @@ function getCategoryMember($category, $cmtype) {
 	return $list["query"]["categorymembers"];
 }
 
-function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subcat|file") {
+function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subcat|file")
+{
 	global $C;
 	echo $type . "\n";
 	$list = getDBList($type);
@@ -315,6 +338,8 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= " (F7)";
 			} else if (preg_match("/{{Replaceable fair use\|/i", $text)) {
 				$message .= " (F10)";
+			} else if (preg_match("/{{AFC submission\|/i", $text)) {
+				$message .= " (O7|AFC)";
 			}
 			if (preg_match("/{{hang ?on(?:\|([^}]+))?}}/i", $text, $m)) {
 				$message .= " (#hangon";
@@ -353,7 +378,8 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	}
 }
 
-function PageMatchList($page, $regex) {
+function PageMatchList($page, $regex)
+{
 	// $regex[] 1=>page 2=>title 3=>status
 	$url = 'https://zh.wikipedia.org/w/index.php?' . http_build_query(array(
 		"title" => $page,
@@ -376,7 +402,8 @@ function PageMatchList($page, $regex) {
 	return $list;
 }
 
-function PageStatusHandler($type, $hashtag, $page, $regex) {
+function PageStatusHandler($type, $hashtag, $page, $regex)
+{
 	global $C;
 	// $regex[] 1=>page 2=>title 3=>status
 	echo $type . "\n";
@@ -441,7 +468,8 @@ function PageStatusHandler($type, $hashtag, $page, $regex) {
 	}
 }
 
-function AFDBHandler() {
+function AFDBHandler()
+{
 	global $C;
 	echo "afdb\n";
 	$list = getDBList("afdb");
@@ -526,7 +554,8 @@ function AFDBHandler() {
 	}
 }
 
-function RFCUHandler() {
+function RFCUHandler()
+{
 	global $C;
 	$type = "rfcu";
 	echo $type . "\n";
