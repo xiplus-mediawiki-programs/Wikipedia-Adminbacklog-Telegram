@@ -313,6 +313,8 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				$message .= " (G1|七日草稿)";
 			} else if (preg_match("/{{(Now[ _]?Commons|Ncd|F7)\|/i", $text)) {
 				$message .= " (F7)";
+			} else if (preg_match("/{{Replaceable fair use\|/i", $text)) {
+				$message .= " (F10)";
 			}
 			if (preg_match("/{{hang ?on(?:\|([^}]+))?}}/i", $text, $m)) {
 				$message .= " (#hangon";
