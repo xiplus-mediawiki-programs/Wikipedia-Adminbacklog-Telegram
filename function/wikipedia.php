@@ -297,7 +297,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 	}
 	foreach (getCategoryMember($category, $cmtype) as $page) {
 		$section = '';
-		if (in_array($type, ['epfull', 'eptemp', 'epsemi', 'epnonoe', 'unblock'])) {
+		if (in_array($type, ['epfull', 'eptemp', 'epext', 'epsemi', 'epnonoe', 'unblock'])) {
 			$section = 'footer';
 		}
 		$url = mediawikiurlencode($C["baseurl"], $page["title"], $section);
