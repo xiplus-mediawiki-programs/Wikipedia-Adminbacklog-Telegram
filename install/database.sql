@@ -37,10 +37,12 @@ ALTER TABLE `autodel`
   ADD UNIQUE KEY `message_id` (`message_id`);
 
 ALTER TABLE `log`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `time` (`time`);
 
 ALTER TABLE `task`
-  ADD UNIQUE KEY `message_id` (`message_id`);
+  ADD UNIQUE KEY `message_id` (`message_id`),
+  ADD KEY `type` (`type`);
 
 
 ALTER TABLE `log`
