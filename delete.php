@@ -30,7 +30,7 @@ if (preg_match("/^(\d+)-(\d+)$/", $argv[1], $m)) {
 	exit("cannot parse id\n");
 }
 
-$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}` WHERE `message_id` >= :startid AND `message_id` <= :endid");
+$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}task` WHERE `message_id` >= :startid AND `message_id` <= :endid");
 $sth->bindValue(":startid", $startid);
 $sth->bindValue(":endid", $endid);
 $sth->execute();

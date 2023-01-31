@@ -17,7 +17,7 @@ $hidden = "";
 foreach ($C["hiddentype"] as $type) {
 	$hidden .= sprintf(" AND `type` != '%s'", $type);
 }
-$query = sprintf("SELECT *, RAND()*900+`date` AS `rnd` FROM `{$C['DBTBprefix']}` WHERE `date` < :date %s ORDER BY `rnd` ASC LIMIT 1", $hidden);
+$query = sprintf("SELECT *, RAND()*900+`date` AS `rnd` FROM `{$C['DBTBprefix']}task` WHERE `date` < :date %s ORDER BY `rnd` ASC LIMIT 1", $hidden);
 echo $query . "\n";
 
 $sth = $G["db"]->prepare($query);

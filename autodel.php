@@ -17,7 +17,7 @@ echo "The time now is " . date("Y-m-d H:i:s", $time) . " (UTC)\n";
 $del = [];
 foreach ($C["autodellimit"] as $limit) {
 	echo "delete " . $limit[0] . " " . $limit[1] . " < " . date("Y-m-d H:i:s", time() - $limit[2]) . " (" . (time() - $limit[2]) . ")\n";
-	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}_autodel` WHERE `type` = :type AND `text` REGEXP :text AND `date` < :date ORDER BY `date`");
+	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}autodel` WHERE `type` = :type AND `text` REGEXP :text AND `date` < :date ORDER BY `date`");
 	$sth->bindValue(":type", $limit[0]);
 	$sth->bindValue(":text", trim($limit[1], "/"));
 	$sth->bindValue(":date", time() - $limit[2]);
@@ -39,7 +39,7 @@ foreach ($del as $message) {
 	} else {
 		echo "\t delete success";
 	}
-	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}_autodel` WHERE `message_id` = :message_id");
+	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}autodel` WHERE `message_id` = :message_id");
 	$sth->bindValue(":message_id", $message["message_id"]);
 	$res = $sth->execute();
 	if ($res === false) {
@@ -48,7 +48,7 @@ foreach ($del as $message) {
 	echo "\n";
 }
 
-$sth = $G["db"]->prepare("SELECT MAX(`update_id`) AS `maxid` FROM `{$C['DBTBprefix']}_autodel`");
+$sth = $G["db"]->prepare("SELECT MAX(`update_id`) AS `maxid` FROM `{$C['DBTBprefix']}autodel`");
 $sth->execute();
 $maxid = (int) $sth->fetch(PDO::FETCH_ASSOC)["maxid"] + 1;
 if (is_null($maxid)) {
@@ -65,7 +65,7 @@ if ($tg === false) {
 }
 $tg = json_decode($tg, true);
 
-$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}_autodel` (`message_id`, `first_name`, `type`, `text`, `update_id`, `date`) VALUES (:message_id, :first_name, :type, :text, :update_id, :date)");
+$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}autodel` (`message_id`, `first_name`, `type`, `text`, `update_id`, `date`) VALUES (:message_id, :first_name, :type, :text, :update_id, :date)");
 foreach ($tg["result"] as $update) {
 	if (isset($update["update_id"]) && isset($update["message"]["message_id"])) {
 		$type = "unknown";

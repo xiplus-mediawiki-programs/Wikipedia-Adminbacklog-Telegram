@@ -17,6 +17,6 @@ echo "The time now is " . date("Y-m-d H:i:s", $time) . " (UTC)\n";
 $limit = date('Y-m-d H:i:s', time() - $C["logkeep"]);
 echo "delete log before $limit\n";
 
-$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}_log` WHERE `time` < :time");
+$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}log` WHERE `time` < :time");
 $sth->bindValue(":time", $limit);
 $sth->execute();

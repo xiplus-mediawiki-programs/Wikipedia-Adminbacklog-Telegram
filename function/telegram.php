@@ -55,7 +55,7 @@ function sendMessage($type, $title, $message, $starttime = null, $skipsend = fal
 		$message_id = $tg["result"]["message_id"];
 	}
 	echo "\t" . $message_id;
-	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}` (`type`, `title`, `starttime`, `date`, `message_id`, `message`) VALUES (:type, :title, :starttime, :date, :message_id, :message)");
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}task` (`type`, `title`, `starttime`, `date`, `message_id`, `message`) VALUES (:type, :title, :starttime, :date, :message_id, :message)");
 	$sth->bindValue(":type", $type);
 	$sth->bindValue(":title", $title);
 	$sth->bindValue(":starttime", $starttime);
@@ -98,7 +98,7 @@ function editMessage($message_id, $message, $starttime = null) {
 			return;
 		}
 	}
-	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}` SET `message` = :message WHERE `message_id` = :message_id");
+	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}task` SET `message` = :message WHERE `message_id` = :message_id");
 	$sth->bindValue(":message", $message);
 	$sth->bindValue(":message_id", $message_id);
 	$sth->execute();
@@ -138,7 +138,7 @@ function deleteMessage($message_id, $date) {
 			}
 		}
 	}
-	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}` WHERE `message_id` = :message_id");
+	$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}task` WHERE `message_id` = :message_id");
 	$sth->bindValue(":message_id", $message_id);
 	$res = $sth->execute();
 	if ($res === false) {
@@ -152,7 +152,7 @@ function deleteMessage($message_id, $date) {
 function setChatDescription() {
 	global $C, $G;
 	echo "setChatDescription\n";
-	$sth = $G["db"]->prepare("SELECT COUNT(*) AS `count`, `type` FROM `{$C['DBTBprefix']}` GROUP BY `type`");
+	$sth = $G["db"]->prepare("SELECT COUNT(*) AS `count`, `type` FROM `{$C['DBTBprefix']}task` GROUP BY `type`");
 	$sth->execute();
 	$row = $sth->fetchAll(PDO::FETCH_ASSOC);
 	$cnt = array();

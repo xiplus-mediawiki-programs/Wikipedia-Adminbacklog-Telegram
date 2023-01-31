@@ -11,7 +11,7 @@ $C["DBhost"] = 'localhost';
 $C['DBname'] = '';
 $C['DBuser'] = '';
 $C['DBpass'] = '';
-$C['DBTBprefix'] = 'Adminbacklog';
+$C['DBTBprefix'] = '';
 
 $C["typelist"] = [
 	"afdb" => ["afdb"],
