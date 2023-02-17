@@ -263,7 +263,7 @@ class EWIPHandler extends VIPBaseHandler
 {
 	public function __construct()
 	{
-		parent::__construct('ewip', '#EWIP', 'Wikipedia:管理员通告板/3RR');
+		parent::__construct('ewip', '#EWIP', 'Wikipedia:管理员布告板/编辑争议');
 	}
 }
 
