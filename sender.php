@@ -106,7 +106,7 @@ if (in_array("ewip", $run)) {
 }
 
 if (in_array("uaa", $run)) {
-	PageStatusHandler("uaa", "#UAA", "Wikipedia:需要管理員注意的用戶名", ["/{{user-uaa\|(?:1=)?([^|]+?)(?:\|.+)?}}/i", 1, 1, 0]);
+	PageStatusHandler("uaa", "#UAA", "Wikipedia:管理员布告板/不当用户名", ["/{{user-uaa\|(?:1=)?([^|]+?)(?:\|.+)?}}/i", 1, 1, 0]);
 }
 
 if (in_array("rfpp", $run)) {
