@@ -210,7 +210,7 @@ class VIPBaseHandler extends WikipediaAdminbacklogBasepage
 	private $splitregex = [
 		['/^(===.+?===)$/m', '%s$1'],
 	];
-	private $statusregex = '/^\* 处理：(<!-- 非管理員僅可標記已執行的封禁，針對提報的意見請放在下一行 -->|)$/m';
+	private $statusregex = '/^(\* 处理：)/m';
 	private $titleregex = '/^===\s*(.+?)\s*===$/m';
 	private $requesterregex = '/发现人：.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
@@ -230,7 +230,7 @@ class VIPBaseHandler extends WikipediaAdminbacklogBasepage
 		$checkdup = [];
 		foreach ($text as $section) {
 			$status = $this->match_text($section, $this->statusregex);
-			if (is_null($status)) {
+			if (!is_null($status)) {
 				continue;
 			}
 
