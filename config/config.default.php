@@ -72,8 +72,10 @@ $C['BadRequester'] = [];
 
 stream_context_set_default(
 	array('http' => array(
-		'ignore_errors' => true),
-	)
+		'ignore_errors' => true,
+		// Wikimedia blocks requests without a User-Agent (T400119)
+		'user_agent' => 'ZHWPAdminBacklogBot/1.0 (https://github.com/Xi-Plus/Wikipedia-Adminbacklog-Telegram)',
+	))
 );
 
 @include __DIR__ . '/config.php';

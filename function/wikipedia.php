@@ -43,11 +43,7 @@ class WikipediaAdminbacklogBasepage
 			'title' => $page,
 			'action' => 'raw',
 		));
-		$text = file_get_contents($url);
-		if ($text === false) {
-			unlock();
-			exit('network error!\n');
-		}
+		$text = fetchUrl($url);
 		return $text;
 	}
 
@@ -61,13 +57,7 @@ class WikipediaAdminbacklogBasepage
 			'cmtitle' => $category,
 			'cmlimit' => 'max',
 		));
-		$list = file_get_contents($url);
-		if ($list === false) {
-			unlock();
-			exit('network error!\n');
-		}
-		$list = json_decode($list, true);
-		return $list['query']['categorymembers'];
+		return fetchCategoryMembers($url);
 	}
 
 	protected function split_text($text, $regexs = [], $skipsection = [])
@@ -278,13 +268,7 @@ function getCategoryMember($category, $cmtype)
 		"cmtitle" => $category,
 		"cmlimit" => "max",
 	));
-	$list = file_get_contents($url);
-	if ($list === false) {
-		unlock();
-		exit("network error!\n");
-	}
-	$list = json_decode($list, true);
-	return $list["query"]["categorymembers"];
+	return fetchCategoryMembers($url);
 }
 
 function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subcat|file")
@@ -312,11 +296,7 @@ function CategoryMemberHandler($type, $hashtag, $category, $cmtype = "page|subca
 				"title" => $page["title"],
 				"action" => "raw",
 			));
-			$text = file_get_contents($url);
-			if ($text === false) {
-				unlock();
-				exit("network error!\n");
-			}
+			$text = fetchUrl($url);
 			if (preg_match("/{{d\|bot=(.*?)\|([^|}]+)/", $text, $m)) {
 				$message .= " (" . htmlentities(substr($m[2], 0, 100)) . ")";
 				$bot = $m[1];
@@ -385,11 +365,7 @@ function PageMatchList($page, $regex)
 		"title" => $page,
 		"action" => "raw",
 	));
-	$text = file_get_contents($url);
-	if ($text === false) {
-		unlock();
-		exit("network error!\n");
-	}
+	$text = fetchUrl($url);
 	preg_match_all($regex[0], $text, $m);
 	$list = array();
 	foreach ($m[0] as $key => $page) {
@@ -477,11 +453,7 @@ function AFDBHandler()
 		"title" => "Wikipedia:頁面存廢討論/積壓討論",
 		"action" => "raw",
 	));
-	$text = file_get_contents($url);
-	if ($text === false) {
-		unlock();
-		exit("network error!\n");
-	}
+	$text = fetchUrl($url);
 	preg_match_all("/{{#lst:(.+?)\|backlog}}/", $text, $m);
 	$checkdup = array();
 	foreach ($m[1] as $page) {
@@ -490,11 +462,7 @@ function AFDBHandler()
 			"title" => $page,
 			"action" => "raw",
 		));
-		$text = file_get_contents($url);
-		if ($text === false) {
-			unlock();
-			exit("network error!\n");
-		}
+		$text = fetchUrl($url);
 		$text = explode("<section begin=backlog />", $text);
 		unset($text[0]);
 		foreach ($text as $temp) {
@@ -564,11 +532,7 @@ function RFCUHandler()
 		"title" => "Steward requests/Checkuser",
 		"action" => "raw",
 	));
-	$text = file_get_contents($url);
-	if ($text === false) {
-		unlock();
-		exit("network error!\n");
-	}
+	$text = fetchUrl($url);
 	$hash = md5(time());
 	$text = preg_replace("/^(===.+?@.+?===)$/m", $hash . "$1", $text);
 	$text = explode($hash, $text);
