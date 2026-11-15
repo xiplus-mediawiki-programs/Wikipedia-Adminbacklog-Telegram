@@ -85,7 +85,7 @@ if (in_array("affp", $run)) {
 }
 
 if (in_array("drv", $run)) {
-	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\*{{status\|(新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/i", 1, 1, 2]);
+	PageStatusHandler("drv", "#存廢覆核", "Wikipedia:存廢覆核請求", ["/==\s*(.+?)\s*==\n(?:.+\n)*\* *{{status\|(新申請|on hold|擱置|搁置|等待|等待中|OH|oh|hold|Hold|\*|\?)/i", 1, 1, 2]);
 }
 
 if (in_array("uc", $run)) {
