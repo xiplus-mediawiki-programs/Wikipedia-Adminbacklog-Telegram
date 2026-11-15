@@ -32,6 +32,13 @@ CREATE TABLE `task` (
   `message` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
+CREATE TABLE `task_type` (
+  `type` varchar(20) NOT NULL,
+  `locked_at` timestamp NULL DEFAULT NULL,
+  `last_run` timestamp NULL DEFAULT NULL,
+  `last_found` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 
 ALTER TABLE `autodel`
   ADD UNIQUE KEY `message_id` (`message_id`);
@@ -43,6 +50,9 @@ ALTER TABLE `log`
 ALTER TABLE `task`
   ADD UNIQUE KEY `message_id` (`message_id`),
   ADD KEY `type` (`type`);
+
+ALTER TABLE `task_type`
+  ADD PRIMARY KEY (`type`);
 
 
 ALTER TABLE `log`

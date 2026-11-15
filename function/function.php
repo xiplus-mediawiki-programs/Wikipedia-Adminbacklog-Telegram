@@ -1,32 +1,44 @@
 <?php
 
-function checklock($type) {
-	global $C;
-	$lockfile = __DIR__ . "/../tmp/" . $type . ".lock";
-	$lock = @file_get_contents($lockfile);
-	if ($lock === false) {
-		return false;
+// Atomically take the lock of $type. The lock is taken when it is free, older than
+// locklimit, or $force is set. Returns true on success, otherwise the unix time the
+// current holder locked it. Times are computed by MySQL to avoid timezone mismatches.
+function lock($type, $force = false) {
+	global $C, $G;
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}task_type` (`type`, `locked_at`) VALUES (:type, NOW())
+		ON DUPLICATE KEY UPDATE `locked_at` = IF(:force OR `locked_at` IS NULL OR `locked_at` <= NOW() - INTERVAL :limit SECOND, NOW(), `locked_at`)");
+	$sth->bindValue(":type", $type);
+	$sth->bindValue(":force", $force ? 1 : 0, PDO::PARAM_INT);
+	$sth->bindValue(":limit", $C["locklimit"], PDO::PARAM_INT);
+	$sth->execute();
+	// 1 = inserted, 2 = updated, 0 = unchanged (still held by someone else)
+	if ($sth->rowCount() > 0 || $force) {
+		echo "locking " . $type . "\n";
+		return true;
 	}
-	$val = (int) $lock;
-	if ($lock === 0) {
-		return false;
-	}
-	if ($lock > time() - $C["locklimit"]) {
-		return $lock;
-	}
-	return false;
+	$sth = $G["db"]->prepare("SELECT UNIX_TIMESTAMP(`locked_at`) FROM `{$C['DBTBprefix']}task_type` WHERE `type` = :type");
+	$sth->bindValue(":type", $type);
+	$sth->execute();
+	return (int) $sth->fetchColumn();
 }
 
-function lock($type) {
-	$lockfile = __DIR__ . "/../tmp/" . $type . ".lock";
-	file_put_contents($lockfile, time());
-	echo "locking " . $type . "\n";
-}
-
+// Release the lock of $type and record the end of the run.
 function unlock($type) {
-	$lockfile = __DIR__ . "/../tmp/" . $type . ".lock";
-	file_put_contents($lockfile, "-1");
+	global $C, $G;
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}task_type` (`type`, `last_run`) VALUES (:type, NOW())
+		ON DUPLICATE KEY UPDATE `locked_at` = NULL, `last_run` = NOW()");
+	$sth->bindValue(":type", $type);
+	$sth->execute();
 	echo "unlocking " . $type . "\n";
+}
+
+// Record that a new task of $type was detected.
+function markFound($type) {
+	global $C, $G;
+	$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}task_type` (`type`, `last_found`) VALUES (:type, NOW())
+		ON DUPLICATE KEY UPDATE `last_found` = NOW()");
+	$sth->bindValue(":type", $type);
+	$sth->execute();
 }
 
 // Release all locks of the current run and stop, without touching existing messages.

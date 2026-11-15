@@ -18,6 +18,10 @@ function getago($starttime = null) {
 function sendMessage($type, $title, $message, $starttime = null, $skipsend = false) {
 	global $C, $G, $run;
 
+	// A null starttime means a newly detected task (renew.php passes the original one)
+	if (is_null($starttime)) {
+		markFound($type);
+	}
 	if (in_array($type, $C["disabletype"])) {
 		return;
 	}

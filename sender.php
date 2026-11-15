@@ -39,12 +39,11 @@ if (isset($options["del"])) {
 	$run = ["none"];
 }
 
+$run = array_unique($run);
 foreach ($run as $type) {
-	if (($lock = checklock($type)) && !isset($options["f"])) {
+	if (($lock = lock($type, isset($options["f"]))) !== true) {
 		$run = array_diff($run, [$type]);
 		echo "skipping " . $type . " (" . date("Y-m-d H:i:s", $lock) . ")\n";
-	} else {
-		lock($type);
 	}
 }
 
