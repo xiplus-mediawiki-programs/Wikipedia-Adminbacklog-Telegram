@@ -13,7 +13,7 @@ if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 $time = time();
 echo "The time now is " . date("Y-m-d H:i:s", $time) . " (UTC)\n";
 
-$options = getopt("dr:f", ["del:"]);
+$options = getopt("dr:f", ["del:", "stale"]);
 
 $run = [];
 if (isset($options["r"])) {
@@ -23,6 +23,17 @@ if (isset($options["r"])) {
 		$run = [$options["r"]];
 	}
 	writelog("request: " . implode(", ", $run));
+}
+// Run the type that has gone longest without a run, so every type runs at least
+// once per stalelimit even when its trigger never fires.
+if (isset($options["stale"])) {
+	$stale = pickStaleType();
+	if (is_null($stale)) {
+		echo "no stale type\n";
+	} else {
+		$run[] = $stale;
+		writelog("stale: " . $stale);
+	}
 }
 if (isset($options["d"])) {
 	$run[] = "description";

@@ -32,6 +32,40 @@ function unlock($type) {
 	echo "unlocking " . $type . "\n";
 }
 
+// Pick the enabled type that has gone longest without a run, if that was more than
+// stalelimit ago (or it has never run). Returns null when every type is fresh.
+function pickStaleType() {
+	global $C, $G;
+	$types = [];
+	foreach ($C["typelist"] as $name => $list) {
+		if ($name !== "sum") {
+			$types = array_merge($types, $list);
+		}
+	}
+	$types = array_values(array_diff(array_unique($types), $C["disabletype"]));
+	$sth = $G["db"]->prepare("SELECT `type`, UNIX_TIMESTAMP(`last_run`) AS `last_run`,
+		`last_run` > NOW() - INTERVAL :limit SECOND AS `fresh` FROM `{$C['DBTBprefix']}task_type`");
+	$sth->bindValue(":limit", $C["stalelimit"], PDO::PARAM_INT);
+	$sth->execute();
+	$status = [];
+	foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		$status[$row["type"]] = $row;
+	}
+	$pick = null;
+	$pickTime = PHP_INT_MAX;
+	foreach ($types as $type) {
+		if (!empty($status[$type]["fresh"])) {
+			continue;
+		}
+		$lastRun = isset($status[$type]["last_run"]) ? (int) $status[$type]["last_run"] : 0;
+		if ($lastRun < $pickTime) {
+			$pick = $type;
+			$pickTime = $lastRun;
+		}
+	}
+	return $pick;
+}
+
 // Record that a new task of $type was detected.
 function markFound($type) {
 	global $C, $G;

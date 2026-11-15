@@ -54,6 +54,9 @@ $C["logkeep"] = 86400 * 30;
 
 $C["locklimit"] = 60 * 5;
 
+// sender.php --stale runs a type whose last run is older than this
+$C["stalelimit"] = 86400;
+
 $C["csdbotlimit"] = 10;
 
 $C['module']['mediawikiurlencode'] = __DIR__ . '/function/Mediawiki-urlencode/mediawikiurlencode.php';
