@@ -49,14 +49,6 @@ $C["ChatDescription"] = "中文維基百科管理員積壓工作直播，共有%
 $C["hiddentype"] = [];
 $C["disabletype"] = [];
 
-$C["autodellimit"] = [
-	["text", "/.*/", 60 * 60 * 24],
-	["sticker", "/.*/", 60 * 60 * 24],
-	["document", "/.*/", 60 * 60 * 24],
-	["photo", "/.*/", 60 * 60 * 24],
-	["unknown", "/.*/", 60 * 60 * 24],
-];
-
 $C["renewlimit"] = 3600 * 47;
 $C["logkeep"] = 86400 * 30;
 

@@ -8,15 +8,6 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE `autodel` (
-  `message_id` int(11) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `type` varchar(10) NOT NULL DEFAULT 'text',
-  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `update_id` int(11) NOT NULL,
-  `date` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-
 CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `msg` text NOT NULL,
@@ -39,9 +30,6 @@ CREATE TABLE `task_type` (
   `last_found` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
-
-ALTER TABLE `autodel`
-  ADD UNIQUE KEY `message_id` (`message_id`);
 
 ALTER TABLE `log`
   ADD PRIMARY KEY (`id`),
