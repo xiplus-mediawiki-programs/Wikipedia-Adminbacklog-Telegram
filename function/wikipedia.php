@@ -198,10 +198,10 @@ class RFPPHandler extends WikipediaAdminbacklogBasepage
 class VIPBaseHandler extends WikipediaAdminbacklogBasepage
 {
 	private $splitregex = [
-		['/^(===.+?===)$/m', '%s$1'],
+		['/^(={2,3}[^=].*?={2,3})\s*$/m', '%s$1'],
 	];
-	private $statusregex = '/^(\* 处理：)/m';
-	private $titleregex = '/^===\s*(.+?)\s*===$/m';
+	private $statusregex = '/^(\* *(?:处|處)理：)/m';
+	private $titleregex = '/^={2,3}\s*([^=].*?)\s*={2,3}\s*$/m';
 	private $requesterregex = '/发现人：.*?\[\[(?:(?:User(?:[ _]talk)?|U|UT|用户|用戶|使用者):|Special:(?:(?:Contributions|Contribs)|(?:用户|用戶|使用者)?(?:贡献|貢獻))\/)([^\/|\]]*)/';
 
 	public function __construct($type, $hashtag, $page)
