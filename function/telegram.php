@@ -31,10 +31,9 @@ function sendMessage($type, $title, $message, $starttime = null, $skipsend = fal
 	echo "sendMessage: " . $title . " / " . $message;
 	$ago = getago($starttime);
 	if (in_array($type, $C["hiddentype"]) || $skipsend) {
-		$tg = [
-			"ok" => true,
-		];
-		$message_id = rand(0, 9999);
+		// Not sent to Telegram. Use a negative placeholder id: it cannot clash with a
+		// real message id, and editMessage/deleteMessage skip the API for it.
+		$message_id = -random_int(1, 2147483647);
 	} else {
 		$url = 'https://api.telegram.org/bot' . $C['token'] . '/sendMessage?' . http_build_query(array(
 			"chat_id" => $C["chat_id"],
@@ -78,36 +77,38 @@ function sendMessage($type, $title, $message, $starttime = null, $skipsend = fal
 function editMessage($message_id, $message, $starttime = null) {
 	global $C, $G, $run;
 	echo "editMessage: " . $message_id . " / " . $message;
-	$ago = getago($starttime);
-	$url = 'https://api.telegram.org/bot' . $C['token'] . '/editMessageText?' . http_build_query(array(
-		"chat_id" => $C["chat_id"],
-		"message_id" => $message_id,
-		"parse_mode" => "HTML",
-		"disable_web_page_preview" => true,
-		"text" => $message . " " . $ago,
-	));
-	$tgs = @file_get_contents($url);
-	if ($tgs === false) {
-		echo "network fail\n";
-		writelog("network fail edit: " . $message_id . " / " . $message);
-		return;
-	}
-	$tg = json_decode($tgs, true);
-	if (!$tg["ok"]) {
-		echo "\tedit fail\n";
-		echo $url . "\n";
-		var_dump($tg);
-		// Telegram may append details after these descriptions, so match by prefix
-		if (!str_starts_with($tg["description"], "Bad Request: message is not modified")
-			&& !str_starts_with($tg["description"], "Bad Request: message to edit not found")) {
-			writelog("edit fail: " . $message_id . " / " . $message . " / " . $tgs);
+	// Negative ids are placeholders of unsent (hidden) tasks: only update the DB
+	if ($message_id > 0) {
+		$ago = getago($starttime);
+		$url = 'https://api.telegram.org/bot' . $C['token'] . '/editMessageText?' . http_build_query(array(
+			"chat_id" => $C["chat_id"],
+			"message_id" => $message_id,
+			"parse_mode" => "HTML",
+			"disable_web_page_preview" => true,
+			"text" => $message . " " . $ago,
+		));
+		$tgs = @file_get_contents($url);
+		if ($tgs === false) {
+			echo "network fail\n";
+			writelog("network fail edit: " . $message_id . " / " . $message);
 			return;
+		}
+		$tg = json_decode($tgs, true);
+		if (!$tg["ok"]) {
+			echo "\tedit fail\n";
+			echo $url . "\n";
+			var_dump($tg);
+			// Telegram may append details after these descriptions, so match by prefix
+			if (!str_starts_with($tg["description"], "Bad Request: message is not modified")
+				&& !str_starts_with($tg["description"], "Bad Request: message to edit not found")) {
+				writelog("edit fail: " . $message_id . " / " . $message . " / " . $tgs);
+				return;
+			}
 		}
 	}
 	$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}task` SET `message` = :message WHERE `message_id` = :message_id");
 	$sth->bindValue(":message", $message);
 	$sth->bindValue(":message_id", $message_id);
-	$sth->execute();
 	$res = $sth->execute();
 	if ($res === false) {
 		echo "\tdb fail: " . $sth->errorInfo()[2] . "\n";
@@ -119,7 +120,10 @@ function editMessage($message_id, $message, $starttime = null) {
 
 function deleteMessage($message_id, $date) {
 	global $C, $G, $run;
-	if ($date < time() - 86400 * 2) {
+	// Negative ids are placeholders of unsent (hidden) tasks: only delete the DB row
+	if ($message_id < 0) {
+		echo "deleteMessage: " . $message_id . " (placeholder)";
+	} else if ($date < time() - 86400 * 2) {
 		editMessage($message_id, "#已完成工作 ■■■■■");
 	} else {
 		echo "deleteMessage: " . $message_id;

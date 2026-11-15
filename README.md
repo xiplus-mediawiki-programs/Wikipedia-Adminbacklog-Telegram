@@ -30,7 +30,7 @@
 
 | 表 | 內容 |
 |---|---|
-| `task` | 頻道上目前的任務，每則訊息一列。`starttime` 為首次偵測時間，`date` 為訊息送出時間 |
+| `task` | 頻道上目前的任務，每則訊息一列。`starttime` 為首次偵測時間，`date` 為訊息送出時間。沒有實際發送的任務（hidden 類別、超過 `csdbotlimit` 的速刪）`message_id` 為負數的佔位值，編輯與刪除時不會呼叫 Telegram API |
 | `task_type` | 每個類別一列：`locked_at`（執行中的鎖）、`last_run`（最後執行結束）、`last_found`（最後偵測到新任務） |
 | `log` | 觸發紀錄（`request: <type>`、`--stale` 的 `stale: <type>`）與錯誤（`send fail`、`edit fail`、中止原因等） |
 
