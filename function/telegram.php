@@ -93,7 +93,9 @@ function editMessage($message_id, $message, $starttime = null) {
 		echo "\tedit fail\n";
 		echo $url . "\n";
 		var_dump($tg);
-		if (!in_array($tg["description"], ["Bad Request: message is not modified", "Bad Request: message to edit not found"])) {
+		// Telegram may append details after these descriptions, so match by prefix
+		if (!str_starts_with($tg["description"], "Bad Request: message is not modified")
+			&& !str_starts_with($tg["description"], "Bad Request: message to edit not found")) {
 			writelog("edit fail: " . $message_id . " / " . $message . " / " . $tgs);
 			return;
 		}
@@ -132,8 +134,8 @@ function deleteMessage($message_id, $date) {
 			echo "\tdelete fail\n";
 			echo $url . "\n";
 			var_dump($tg);
-			if (!in_array($tg["description"], ["Bad Request: message to delete not found"])) {
-				writelog("delete: " . $message_id . " / " . $tgs . " / " . json_encode(getMessageFromDB($message_id)), JSON_UNESCAPED_UNICODE);
+			if (!str_starts_with($tg["description"], "Bad Request: message to delete not found")) {
+				writelog("delete: " . $message_id . " / " . $tgs . " / " . json_encode(getMessageFromDB($message_id), JSON_UNESCAPED_UNICODE));
 				return;
 			}
 		}
