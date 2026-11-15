@@ -121,7 +121,7 @@ if (in_array("rfcu", $run)) {
 }
 
 if (in_array("revoke", $run)) {
-	PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\*{{User\|(?!提报的用户名)(.+?)}}\n\*:{{status\|新提案}}/i", 1, 1, 0]);
+	PageStatusHandler("revoke", "#除權", "Wikipedia:申请解除权限", ["/\* *{{(?:User|vandal)\|(?!提报的用户名)(.+?)}}\n\* *:? *{{status\|(?:新提案|待處理|待处理)}}/i", 1, 1, 0]);
 }
 
 if (in_array("rfrpatrol", $run)) {
